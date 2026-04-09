@@ -1563,6 +1563,36 @@ window.salvar = async function() {
   alert("Salvo!");
 };
 </script>
+</script><!-- CAMPO DE DIGITAÇÃO -->
+<input id="materia" placeholder="Digite a matéria">
+<button onclick="salvar()">Salvar</button>
+
+<!-- CÓDIGO FIREBASE -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// CONFIGURAÇÃO DO SEU PROJETO FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
+  authDomain: "duda-projects-93dd3.firebaseapp.com",
+  projectId: "duda-projects-93dd3",
+  storageBucket: "duda-projects-93dd3.firebasestorage.app",
+  messagingSenderId: "651965643704",
+  appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
+};
+
+// INICIALIZAÇÃO
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// FUNÇÃO PARA SALVAR
+window.salvar = async function() {
+  const materia = document.getElementById("materia").value;
+
+  await addDoc(collection(db, "estudos"), { materia });
+  alert("Salvo!");
+};
 </script>
 </body> 
 </html>
