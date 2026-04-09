@@ -102,12 +102,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
 .cal-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--ink)}
 .cal-cell:hover .cal-tooltip{display:block}
 /* EDITOR */
-.editor-container{border:1px solid var(--border-mid);border-radius:var(--r-lg);overflow:hidden;background:#fff}
-.editor-toolbar{display:flex;gap:3px;padding:9px 12px;border-bottom:1px solid var(--border);background:var(--cream);flex-wrap:wrap;align-items:center}
+.editor-container{border:1px solid var(--border-mid);border-radius:var(--r-lg);overflow:hidden;background:#fff;display:flex;flex-direction:column;max-height:70vh}
+.editor-toolbar{display:flex;gap:3px;padding:9px 12px;border-bottom:1px solid var(--border);background:var(--cream);flex-wrap:wrap;align-items:center;position:sticky;top:0;z-index:10;flex-shrink:0}
 .tool-btn{padding:4px 9px;border:1px solid var(--border-mid);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;color:var(--ink);font-family:'DM Sans',sans-serif;transition:all 0.1s}
 .tool-btn:hover{background:var(--blush);border-color:var(--rose)}
 .tool-sep{width:1px;height:18px;background:var(--border-mid);margin:0 2px}
-.editor-body{min-height:220px;padding:18px 22px;font-size:14px;line-height:1.8;outline:none;border:none;background:#fff;color:var(--ink);font-family:'DM Sans',sans-serif}
+.editor-body{min-height:220px;padding:18px 22px;font-size:14px;line-height:1.8;outline:none;border:none;background:#fff;color:var(--ink);font-family:'DM Sans',sans-serif;overflow-y:auto;flex:1}
 .editor-body:empty::before{content:attr(data-placeholder);color:var(--ink-light);pointer-events:none}
 /* NOTE LIST */
 .note-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.1s;border-radius:0}
@@ -328,7 +328,12 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
         <div id="materia-perf-lista"></div>
       </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">Plano mensal — Abril / Maio 2026</div></div>
+        <div class="card-header">
+          <div class="card-title">Plano mensal</div>
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="addPlanoMes()">+ Novo mês</button>
+          </div>
+        </div>
         <div id="plano-mensal"></div>
       </div>
     </div>
@@ -359,7 +364,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
     <div id="cron-oab-tab" style="display:none">
       <div class="notice notice-warn">📅 OAB 48º: Edital 14/09 · Inscrições 21–28/09 · <strong>1ª Fase: 20/12/2026</strong> · 2ª Fase: 21/02/2027</div>
       <div class="card">
-        <div class="card-header"><div class="card-title">Cronograma OAB — sábados e domingos (4h cada)</div></div>
+        <div class="card-header">
+          <div class="card-title">Cronograma OAB — sábados e domingos (4h cada)</div>
+          <button class="btn btn-primary btn-sm" onclick="addPlanoOABItem()">+ Novo período</button>
+        </div>
         <div id="oab-plano-cronograma"></div>
       </div>
     </div>
@@ -580,6 +588,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);m
   </div>
 </div>
 
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
 <script>
 const TODAY = new Date(2026,3,9);
 const OAB_DATE = new Date(2026,11,20); // 20/12/2026
@@ -637,16 +648,88 @@ let state = {
   driveFolders:{}, weekTasks:{}, calMonth:3, calYear:2026,
   notePeriod:7, drivePeriod:7, editingNoteIdx:null, editingOabNoteIdx:null,
   currentDriveFolder:null, editingDriveNoteIdx:null,
+  planoMensal:null, planoOAB:null,
 };
 
 NOTAS_MATERIAS.forEach(m => { state.notas[m] = {trab:'',p1:'',p2:'',p3:'',exame:''}; });
 
-try {
-  const saved = localStorage.getItem('dudastudy_v3');
-  if (saved) { const d = JSON.parse(saved); Object.keys(d).forEach(k => { if(k in state) state[k] = d[k]; }); }
-} catch(e) {}
+// ══════════════════════════════════════════════
+// ── FIREBASE — BANCO DE DADOS NA NUVEM ──
+// ══════════════════════════════════════════════
+// ⚠️ CONFIGURE AQUI com os dados do seu projeto Firebase:
+const firebaseConfig = {
+  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
+  authDomain: "duda-projects-93dd3.firebaseapp.com",
+  databaseURL: "https://duda-projects-93dd3-default-rtdb.firebaseio.com",
+  projectId: "duda-projects-93dd3",
+  storageBucket: "duda-projects-93dd3.firebasestorage.app",
+  messagingSenderId: "651965643704",
+  appId: "1:651965643704:web:2598d2cc4c4087cf98ad4d"
+};
 
-const save = () => { try { localStorage.setItem('dudastudy_v3', JSON.stringify(state)); } catch(e) {} };
+let db = null;
+let firebaseOk = false;
+
+try {
+  if (typeof firebase !== 'undefined') {
+    firebase.initializeApp(firebaseConfig);
+    db = firebase.firestore();
+    firebaseOk = true;
+    console.log('✅ Firebase conectado!');
+  } else {
+    console.warn('⚠️ Firebase SDK não carregou. Se está abrindo o arquivo direto do computador (file://), isso é normal. Suba no GitHub Pages para funcionar.');
+  }
+} catch(e) {
+  console.warn('Firebase erro:', e);
+}
+
+async function loadFromCloud() {
+  if (firebaseOk && !firebaseConfig.apiKey.includes('COLE_SUA')) {
+    try {
+      const doc = await db.collection('dudastudy').doc('dados').get();
+      if (doc.exists) {
+        const d = doc.data().state ? JSON.parse(doc.data().state) : {};
+        Object.keys(d).forEach(k => { if(k in state) state[k] = d[k]; });
+        return;
+      }
+    } catch(e) {
+      console.warn('Erro ao carregar do Firebase:', e);
+    }
+  }
+  // Fallback: localStorage
+  try {
+    const saved = localStorage.getItem('dudastudy_v3');
+    if (saved) { const d = JSON.parse(saved); Object.keys(d).forEach(k => { if(k in state) state[k] = d[k]; }); }
+  } catch(e) {}
+}
+
+let saveTimeout = null;
+const save = () => {
+  clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(async () => {
+    const json = JSON.stringify(state);
+    // Sempre salva no localStorage como backup
+    try { localStorage.setItem('dudastudy_v3', json); } catch(e) {}
+    // Salva no Firebase se configurado
+    if (firebaseOk && !firebaseConfig.apiKey.includes('COLE_SUA')) {
+      try {
+        await db.collection('dudastudy').doc('dados').set({ state: json, updatedAt: new Date().toISOString() });
+        updateSyncDot(true);
+      } catch(e) {
+        console.warn('Erro ao salvar no Firebase:', e);
+        updateSyncDot(false);
+      }
+    }
+  }, 500);
+};
+
+function updateSyncDot(ok) {
+  const dot = document.getElementById('sync-dot');
+  if(dot) {
+    dot.style.background = ok ? '#5A9E6A' : '#C96464';
+    dot.title = ok ? 'Sincronizado' : 'Erro ao sincronizar';
+  }
+}
 
 // ── NAV ──
 function showPage(id, btn) {
@@ -1180,10 +1263,8 @@ function renderMateriaPerfLista() {
   }).join('');
 }
 
-function renderPlanoMensal() {
-  const el = document.getElementById('plano-mensal');
-  if(!el) return;
-  const meses = [
+function getDefaultPlanoMensal() {
+  return [
     {mes:'Abril 2026', itens:[
       {sem:'Semana 1 (09-15)', fac:'Revisar P1, iniciar conteúdo P2. EAD: A2/A3 D. Adm.', oab:'D. Civil — parte geral, família'},
       {sem:'Semana 2 (16-22)', fac:'PROVA EAD 18/04. D. Proc. Civil IV — Agravo. Estágio: Recurso de Apelação', oab:'D. Constitucional — direitos fundamentais'},
@@ -1195,38 +1276,151 @@ function renderPlanoMensal() {
       {sem:'Semana 3 (16-22)', fac:'Relatório estágio. EAD Aval. II (23/05)', oab:'D. Tributário — CTN'},
     ]},
   ];
-  el.innerHTML = meses.map(m=>`
-    <div style="margin-bottom:16px">
-      <div style="font-size:12px;font-weight:500;color:var(--rose);margin-bottom:8px">${m.mes}</div>
-      ${m.itens.map(s=>`<div style="display:grid;grid-template-columns:140px 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px">
-        <div style="font-weight:500;color:var(--ink-mid)">${s.sem}</div>
-        <div style="color:var(--ink-mid)">${s.fac}</div>
-        <div style="color:var(--purple)">${s.oab}</div>
-      </div>`).join('')}
+}
+
+function renderPlanoMensal() {
+  const el = document.getElementById('plano-mensal');
+  if(!el) return;
+  if(!state.planoMensal) state.planoMensal = getDefaultPlanoMensal();
+  const meses = state.planoMensal;
+
+  if(!meses.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">📅</div><div class="empty-text">Nenhum mês no plano. Clique em "+ Novo mês" para começar.</div></div>';
+    return;
+  }
+
+  el.innerHTML = meses.map((m, mi) => `
+    <div style="margin-bottom:20px;border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden">
+      <div style="background:var(--cream);padding:10px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border)">
+        <div style="font-size:13px;font-weight:600;color:var(--rose)">${m.mes}</div>
+        <div style="display:flex;gap:6px">
+          <button class="btn btn-outline btn-sm" onclick="editPlanoMesNome(${mi})" style="font-size:10px;padding:3px 8px">✏️ Renomear</button>
+          <button class="btn btn-outline btn-sm" onclick="addPlanoSemana(${mi})" style="font-size:10px;padding:3px 8px">+ Semana</button>
+          <button class="btn btn-outline btn-sm" onclick="removePlanoMes(${mi})" style="font-size:10px;padding:3px 8px;color:var(--danger)">🗑</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:130px 1fr 1fr 36px;gap:0;font-size:11px;padding:0">
+        <div style="font-weight:500;color:var(--ink-light);padding:8px 10px;border-bottom:1px solid var(--border);background:var(--cream)">Semana</div>
+        <div style="font-weight:500;color:var(--ink-light);padding:8px 10px;border-bottom:1px solid var(--border);background:var(--cream)">Faculdade</div>
+        <div style="font-weight:500;color:var(--ink-light);padding:8px 10px;border-bottom:1px solid var(--border);background:var(--cream)">OAB</div>
+        <div style="border-bottom:1px solid var(--border);background:var(--cream)"></div>
+        ${m.itens.map((s, si) => `
+        <div style="padding:8px 10px;border-bottom:1px solid var(--border);font-weight:500;color:var(--ink-mid);cursor:pointer" onclick="editPlanoItem(${mi},${si},'sem')" title="Clique para editar">${s.sem}</div>
+        <div style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--ink-mid);cursor:pointer" onclick="editPlanoItem(${mi},${si},'fac')" title="Clique para editar">${s.fac}</div>
+        <div style="padding:8px 10px;border-bottom:1px solid var(--border);color:var(--purple);cursor:pointer" onclick="editPlanoItem(${mi},${si},'oab')" title="Clique para editar">${s.oab}</div>
+        <div style="padding:8px 10px;border-bottom:1px solid var(--border);text-align:center">
+          <button onclick="removePlanoSemana(${mi},${si})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:14px" title="Excluir semana">×</button>
+        </div>`).join('')}
+      </div>
     </div>`).join('');
 }
 
-function renderOABPlanoCron() {
-  const el = document.getElementById('oab-plano-cronograma');
-  if(!el) return;
-  const plano = [
+function addPlanoMes() {
+  const nome = prompt('Nome do mês (ex: Junho 2026):');
+  if(!nome) return;
+  if(!state.planoMensal) state.planoMensal = getDefaultPlanoMensal();
+  state.planoMensal.push({mes:nome, itens:[]});
+  save(); renderPlanoMensal();
+}
+
+function editPlanoMesNome(mi) {
+  const novo = prompt('Novo nome do mês:', state.planoMensal[mi].mes);
+  if(!novo) return;
+  state.planoMensal[mi].mes = novo;
+  save(); renderPlanoMensal();
+}
+
+function removePlanoMes(mi) {
+  if(!confirm('Excluir este mês e todas suas semanas?')) return;
+  state.planoMensal.splice(mi, 1);
+  save(); renderPlanoMensal();
+}
+
+function addPlanoSemana(mi) {
+  const sem = prompt('Nome da semana (ex: Semana 1 (01-07)):') || 'Nova semana';
+  const fac = prompt('Plano Faculdade:') || '';
+  const oab = prompt('Plano OAB:') || '';
+  state.planoMensal[mi].itens.push({sem, fac, oab});
+  save(); renderPlanoMensal();
+}
+
+function removePlanoSemana(mi, si) {
+  if(!confirm('Excluir esta semana?')) return;
+  state.planoMensal[mi].itens.splice(si, 1);
+  save(); renderPlanoMensal();
+}
+
+function editPlanoItem(mi, si, campo) {
+  const labels = {sem:'Semana', fac:'Faculdade', oab:'OAB'};
+  const atual = state.planoMensal[mi].itens[si][campo];
+  const novo = prompt(`Editar ${labels[campo]}:`, atual);
+  if(novo === null) return;
+  state.planoMensal[mi].itens[si][campo] = novo;
+  save(); renderPlanoMensal();
+}
+
+// ── PLANO OAB EDITÁVEL ──
+function getDefaultPlanoOAB() {
+  return [
     {periodo:'Abr–Mai 2026 (2 meses)', foco:'D. Civil + D. Constitucional', meta:'Sábados: 4h D. Civil · Domingos: 4h D. Const.', questoes:'20 questões/fds'},
     {periodo:'Jun–Jul 2026 (2 meses)', foco:'D. Penal + D. do Trabalho', meta:'Sábados: 4h D. Penal · Domingos: 4h D. Trabalho', questoes:'30 questões/fds'},
     {periodo:'Ago–Set 2026 (2 meses)', foco:'D. Proc. Civil + D. Proc. Penal', meta:'Sábados: 4h DPC · Domingos: 4h DPP', questoes:'40 questões/fds'},
     {periodo:'Out–Nov 2026 (2 meses)', foco:'D. Empresarial + Tributário + Adm.', meta:'Sábados: 4h revisão · Domingos: simulados', questoes:'Simulados completos'},
     {periodo:'Dez 2026 — Prova 20/12', foco:'Revisão geral + simulados', meta:'Foco total em simulados de provas anteriores', questoes:'1 simulado completo/fds'},
   ];
-  el.innerHTML = `<div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;gap:0;font-size:11px">
+}
+
+function renderOABPlanoCron() {
+  const el = document.getElementById('oab-plano-cronograma');
+  if(!el) return;
+  if(!state.planoOAB) state.planoOAB = getDefaultPlanoOAB();
+  const plano = state.planoOAB;
+
+  if(!plano.length) {
+    el.innerHTML = '<div class="empty-state"><div class="empty-icon">⚖️</div><div class="empty-text">Nenhum período no plano OAB. Clique em "+ Novo período".</div></div>';
+    return;
+  }
+
+  el.innerHTML = `<div style="display:grid;grid-template-columns:160px 1fr 1fr 120px 36px;gap:0;font-size:11px">
     <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Período</div>
     <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Foco</div>
     <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Divisão semanal</div>
     <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Meta</div>
-    ${plano.map(p=>`
-    <div style="padding:9px 8px;border-bottom:1px solid var(--border);font-weight:500;color:var(--rose)">${p.periodo}</div>
-    <div style="padding:9px 8px;border-bottom:1px solid var(--border)">${p.foco}</div>
-    <div style="padding:9px 8px;border-bottom:1px solid var(--border);color:var(--ink-mid)">${p.meta}</div>
-    <div style="padding:9px 8px;border-bottom:1px solid var(--border);color:var(--purple)">${p.questoes}</div>`).join('')}
+    <div style="border-bottom:1px solid var(--border)"></div>
+    ${plano.map((p, i) => `
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);font-weight:500;color:var(--rose);cursor:pointer" onclick="editPlanoOABItem(${i},'periodo')" title="Clique para editar">${p.periodo}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);cursor:pointer" onclick="editPlanoOABItem(${i},'foco')" title="Clique para editar">${p.foco}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);color:var(--ink-mid);cursor:pointer" onclick="editPlanoOABItem(${i},'meta')" title="Clique para editar">${p.meta}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);color:var(--purple);cursor:pointer" onclick="editPlanoOABItem(${i},'questoes')" title="Clique para editar">${p.questoes}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);text-align:center">
+      <button onclick="removePlanoOABItem(${i})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:14px" title="Excluir">×</button>
+    </div>`).join('')}
   </div>`;
+}
+
+function addPlanoOABItem() {
+  const periodo = prompt('Período (ex: Jun–Jul 2026):') || 'Novo período';
+  const foco = prompt('Foco (ex: D. Civil + D. Penal):') || '';
+  const meta = prompt('Divisão semanal:') || '';
+  const questoes = prompt('Meta de questões:') || '';
+  if(!state.planoOAB) state.planoOAB = getDefaultPlanoOAB();
+  state.planoOAB.push({periodo, foco, meta, questoes});
+  save(); renderOABPlanoCron();
+}
+
+function removePlanoOABItem(i) {
+  if(!confirm('Excluir este período?')) return;
+  state.planoOAB.splice(i, 1);
+  save(); renderOABPlanoCron();
+}
+
+function editPlanoOABItem(i, campo) {
+  const labels = {periodo:'Período', foco:'Foco', meta:'Divisão semanal', questoes:'Meta'};
+  const atual = state.planoOAB[i][campo];
+  const novo = prompt(`Editar ${labels[campo]}:`, atual);
+  if(novo === null) return;
+  state.planoOAB[i][campo] = novo;
+  save(); renderOABPlanoCron();
 }
 
 // ── CADERNOS ──
@@ -1456,7 +1650,10 @@ function renderOABFiles(){const el=document.getElementById('oab-files-list');con
 function deleteOABFile(i){state.oabFiles.splice(i,1);save();renderOABFiles();}
 
 // ── INIT ──
-function init() {
+async function init() {
+  // Carrega dados da nuvem/local antes de renderizar
+  await loadFromCloud();
+
   const today = TODAY.toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   const el = document.getElementById('today-label');
   if(el) el.textContent = today.charAt(0).toUpperCase()+today.slice(1);
@@ -1465,162 +1662,28 @@ function init() {
   const hoje = (state.estudos||[]).filter(e=>e.data===todayStr);
   if(hoje.length){const el=document.getElementById('hoje-estudos');if(el)el.innerHTML=hoje.map(e=>`<span class="badge badge-rose" style="margin-right:5px;margin-top:4px">${e.materia}: ${e.minutos}min</span>`).join('');}
   document.getElementById('m-notas').textContent = (state.notes||[]).length;
+
+  showSyncStatus();
 }
+
+function showSyncStatus() {
+  const indicator = document.createElement('div');
+  indicator.id = 'cloud-sync-indicator';
+  indicator.style.cssText = 'position:fixed;bottom:16px;right:16px;background:var(--ink);color:#fff;padding:8px 14px;border-radius:20px;font-size:11px;display:flex;align-items:center;gap:6px;z-index:999;box-shadow:var(--shadow-md);opacity:0.9;transition:opacity 0.3s;cursor:default';
+  const isCloud = firebaseOk && !firebaseConfig.apiKey.includes('COLE_SUA');
+  indicator.innerHTML = isCloud
+    ? '<span id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:#5A9E6A;display:inline-block"></span> Firebase ☁️ conectado'
+    : '<span id="sync-dot" style="width:7px;height:7px;border-radius:50%;background:var(--warn);display:inline-block"></span> Apenas local — configure o Firebase';
+  indicator.title = isCloud
+    ? 'Dados sincronizados na nuvem via Firebase'
+    : 'Configure o Firebase no código para sincronizar entre dispositivos';
+  document.body.appendChild(indicator);
+  setTimeout(()=>{ indicator.style.opacity='0.4'; }, 5000);
+  indicator.addEventListener('mouseenter', ()=>indicator.style.opacity='0.9');
+  indicator.addEventListener('mouseleave', ()=>indicator.style.opacity='0.4');
+}
+
 init();
 </script>
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-import { getFirestore, addDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyC_ww3gZsv2BmsN3Mu9CculDAh58GcYDcM",
-  authDomain: "duda-study-b3cf0.firebaseapp.com",
-  projectId: "duda-study-b3cf0",
-  storageBucket: "duda-study-b3cf0.firebasestorage.app",
-  messagingSenderId: "704893860371",
-  appId: "1:704893860371:web:eff041407402adeaf35de6"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.salvarAnotacao = async function(texto) {
-  await addDoc(collection(db, "anotacoes"), {
-    texto: texto,
-    data: new Date()
-  });
-};
-
-window.carregarAnotacoes = async function() {
-  const lista = document.getElementById("lista-anotacoes");
-  if (!lista) return;
-
-  lista.innerHTML = "";
-
-  const querySnapshot = await getDocs(collection(db, "anotacoes"));
-
-  querySnapshot.forEach((doc) => {
-    const item = document.createElement("div");
-    item.textContent = doc.data().texto;
-    lista.appendChild(item);
-  });
-};
-</script>  <textarea id="anotacao" placeholder="Escreva aqui"></textarea>
-
-<button onclick="salvarAnotacao(document.getElementById('anotacao').value)">
-Salvar
-</button>
-
-<button onclick="carregarAnotacoes()">
-Carregar
-</button>
-
-<div id="lista-anotacoes"></div>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
-    authDomain: "duda-projects-93dd3.firebaseapp.com",
-    projectId: "duda-projects-93dd3",
-    storageBucket: "duda-projects-93dd3.firebasestorage.app",
-    messagingSenderId: "651965643704",
-    appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
-  };
-
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-    <input id="materia" placeholder="Digite a matéria">
-<button onclick="salvar()">Salvar</button>
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
-  authDomain: "duda-projects-93dd3.firebaseapp.com",
-  projectId: "duda-projects-93dd3",
-  storageBucket: "duda-projects-93dd3.firebasestorage.app",
-  messagingSenderId: "651965643704",
-  appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-window.salvar = async function() {
-  const materia = document.getElementById("materia").value;
-
-  await addDoc(collection(db, "estudos"), {
-    materia: materia
-  });
-
-  alert("Salvo!");
-};
-</script>
-</script><!-- CAMPO DE DIGITAÇÃO -->
-<input id="materia" placeholder="Digite a matéria">
-<button onclick="salvar()">Salvar</button>
-
-<!-- CÓDIGO FIREBASE -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// CONFIGURAÇÃO DO SEU PROJETO FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
-  authDomain: "duda-projects-93dd3.firebaseapp.com",
-  projectId: "duda-projects-93dd3",
-  storageBucket: "duda-projects-93dd3.firebasestorage.app",
-  messagingSenderId: "651965643704",
-  appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
-};
-
-// INICIALIZAÇÃO
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// FUNÇÃO PARA SALVAR
-window.salvar = async function() {
-  const materia = document.getElementById("materia").value;
-
-  await addDoc(collection(db, "estudos"), { materia });
-  alert("Salvo!");
-};
-</script><script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getFirestore, addDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// CONFIGURAÇÃO DO SEU PROJETO FIREBASE
-const firebaseConfig = {
-  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
-  authDomain: "duda-projects-93dd3.firebaseapp.com",
-  projectId: "duda-projects-93dd3",
-  storageBucket: "duda-projects-93dd3.firebasestorage.app",
-  messagingSenderId: "651965643704",
-  appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
-};
-
-// INICIALIZA O FIREBASE
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// FUNÇÕES PARA SALVAR
-window.salvarCaderno = async function(titulo, conteudo) {
-  await addDoc(collection(db, "cadernos"), { titulo, conteudo });
-};
-window.salvarAudio = async function(nome, url) {
-  await addDoc(collection(db, "audios"), { nome, url });
-};
-window.salvarArquivo = async function(nome, url) {
-  await addDoc(collection(db, "drive"), { nome, url });
-};
-</script>
-</body> 
+</body>
 </html>
