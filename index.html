@@ -1534,6 +1534,35 @@ Carregar
 
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+    <input id="materia" placeholder="Digite a matéria">
+<button onclick="salvar()">Salvar</button>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
+  authDomain: "duda-projects-93dd3.firebaseapp.com",
+  projectId: "duda-projects-93dd3",
+  storageBucket: "duda-projects-93dd3.firebasestorage.app",
+  messagingSenderId: "651965643704",
+  appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+window.salvar = async function() {
+  const materia = document.getElementById("materia").value;
+
+  await addDoc(collection(db, "estudos"), {
+    materia: materia
+  });
+
+  alert("Salvo!");
+};
+</script>
 </script>
 </body> 
 </html>
