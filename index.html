@@ -1593,6 +1593,34 @@ window.salvar = async function() {
   await addDoc(collection(db, "estudos"), { materia });
   alert("Salvo!");
 };
+</script><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getFirestore, addDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// CONFIGURAÇÃO DO SEU PROJETO FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyAKMEEGlGvcg91CE0YrZ5gECUZm_GROukk",
+  authDomain: "duda-projects-93dd3.firebaseapp.com",
+  projectId: "duda-projects-93dd3",
+  storageBucket: "duda-projects-93dd3.firebasestorage.app",
+  messagingSenderId: "651965643704",
+  appId: "1:651965643704:web:d5b0622bd18acc7898ad4d"
+};
+
+// INICIALIZA O FIREBASE
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// FUNÇÕES PARA SALVAR
+window.salvarCaderno = async function(titulo, conteudo) {
+  await addDoc(collection(db, "cadernos"), { titulo, conteudo });
+};
+window.salvarAudio = async function(nome, url) {
+  await addDoc(collection(db, "audios"), { nome, url });
+};
+window.salvarArquivo = async function(nome, url) {
+  await addDoc(collection(db, "drive"), { nome, url });
+};
 </script>
 </body> 
 </html>
