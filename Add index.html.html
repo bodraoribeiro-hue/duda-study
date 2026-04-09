@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Duda Study ✿</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--rose:#C9647A;--rose-light:#F5DDE3;--rose-dark:#8B3A4C;--blush:#F9EEF1;--cream:#FDF8F5;--ink:#1A1018;--ink-mid:#4A3840;--ink-light:#9A8490;--gold:#C9A96E;--gold-light:#F5EDD8;--mint:#5A9E8A;--mint-light:#E0F0EB;--slate:#5A7A8A;--slate-light:#E0EBF0;--danger:#C96464;--danger-light:#F5DDDD;--warn:#C9964A;--warn-light:#F5EBD8;--success:#5A9E6A;--success-light:#DDF0E3;--purple:#7A5AB5;--purple-light:#EDE8F5;--border:rgba(26,16,24,0.08);--border-mid:rgba(26,16,24,0.14);--shadow-sm:0 1px 3px rgba(26,16,24,0.07),0 1px 2px rgba(26,16,24,0.04);--shadow-md:0 4px 16px rgba(26,16,24,0.08),0 1px 4px rgba(26,16,24,0.05);--r-sm:8px;--r-md:12px;--r-lg:18px;--r-xl:24px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.6}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:220px;background:var(--ink);display:flex;flex-direction:column;z-index:100;overflow:hidden}
+.sidebar::before{content:'';position:absolute;top:-80px;right:-80px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(201,100,122,0.25) 0%,transparent 70%);pointer-events:none}
+.logo-area{padding:24px 24px 18px;border-bottom:1px solid rgba(255,255,255,0.06)}
+.logo-name{font-family:'Playfair Display',serif;font-size:22px;color:#fff;letter-spacing:-0.3px}
+.logo-name span{color:var(--rose)}
+.logo-sub{font-size:11px;color:rgba(255,255,255,0.35);margin-top:3px;font-weight:300;letter-spacing:0.5px;text-transform:uppercase}
+.nav{flex:1;padding:12px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--r-sm);color:rgba(255,255,255,0.45);cursor:pointer;font-size:13px;font-weight:400;transition:all 0.15s;border:none;background:none;width:100%;text-align:left;font-family:'DM Sans',sans-serif}
+.nav-item:hover{color:rgba(255,255,255,0.8);background:rgba(255,255,255,0.05)}
+.nav-item.active{background:rgba(201,100,122,0.2);color:#fff;font-weight:500}
+.nav-item.active .nav-icon{color:var(--rose)}
+.nav-icon{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.nav-section{font-size:9px;font-weight:500;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.2);padding:12px 12px 5px}
+.oab-pill{margin:0 12px 16px;background:rgba(201,100,122,0.15);border:1px solid rgba(201,100,122,0.3);border-radius:var(--r-md);padding:10px 14px;text-align:center}
+.oab-pill-days{font-family:'DM Mono',monospace;font-size:26px;color:var(--rose);font-weight:500;line-height:1}
+.oab-pill-label{font-size:10px;color:rgba(255,255,255,0.35);margin-top:3px;text-transform:uppercase;letter-spacing:0.8px}
+.main{margin-left:220px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:rgba(253,248,245,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 32px;height:56px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.page-title{font-family:'Playfair Display',serif;font-size:18px;color:var(--ink);font-weight:600}
+.today-badge{font-size:12px;color:var(--ink-light)}
+.page{display:none;padding:28px 32px;animation:fadeIn 0.2s ease;flex:1}
+.page.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);box-shadow:var(--shadow-sm);padding:22px}
+.card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.card-title{font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:0.8px;color:var(--ink-light)}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.metric-card{background:#fff;border:1px solid var(--border);border-radius:var(--r-lg);padding:18px;box-shadow:var(--shadow-sm);position:relative;overflow:hidden}
+.metric-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--r-lg) var(--r-lg) 0 0}
+.metric-card.rose::after{background:var(--rose)}.metric-card.gold::after{background:var(--gold)}.metric-card.mint::after{background:var(--mint)}.metric-card.slate::after{background:var(--slate)}
+.metric-label{font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px;font-weight:500}
+.metric-value{font-family:'Playfair Display',serif;font-size:30px;font-weight:600;line-height:1;color:var(--ink)}
+.metric-sub{font-size:11px;color:var(--ink-light);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.oab-hero{background:var(--ink);border-radius:var(--r-xl);padding:28px 32px;color:#fff;position:relative;overflow:hidden;margin-bottom:20px}
+.oab-hero::before{content:'';position:absolute;right:-60px;top:-60px;width:240px;height:240px;border-radius:50%;background:radial-gradient(circle,rgba(201,100,122,0.3) 0%,transparent 70%)}
+.oab-hero::after{content:'';position:absolute;left:-40px;bottom:-40px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(201,150,110,0.15) 0%,transparent 70%)}
+.oab-hero-inner{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}
+.oab-title{font-family:'Playfair Display',serif;font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.oab-big-days{font-family:'Playfair Display',serif;font-size:64px;font-weight:600;color:#fff;line-height:1}
+.oab-big-label{font-size:13px;color:rgba(255,255,255,0.4);margin-top:4px;font-weight:300}
+.oab-boxes{display:flex;gap:8px}
+.oab-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--r-md);padding:12px 16px;text-align:center;min-width:65px}
+.oab-box-val{font-family:'DM Mono',monospace;font-size:22px;color:var(--rose);font-weight:500;line-height:1}
+.oab-box-label{font-size:10px;color:rgba(255,255,255,0.3);margin-top:4px;text-transform:uppercase;letter-spacing:0.6px}
+.badge{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500}
+.badge-rose{background:var(--rose-light);color:var(--rose-dark)}.badge-green{background:var(--success-light);color:var(--success)}.badge-amber{background:var(--warn-light);color:var(--warn)}.badge-red{background:var(--danger-light);color:var(--danger)}.badge-slate{background:var(--slate-light);color:var(--slate)}.badge-gold{background:var(--gold-light);color:#8A6A30}.badge-purple{background:var(--purple-light);color:var(--purple)}.badge-gray{background:#F0EEF0;color:#7A6878}
+.tabs{display:flex;gap:4px;background:var(--blush);border-radius:var(--r-md);padding:4px;margin-bottom:18px;width:fit-content}
+.tab-btn{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:none;background:none;color:var(--ink-light);font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.tab-btn.active{background:#fff;color:var(--ink);box-shadow:var(--shadow-sm)}
+.data-table{width:100%;border-collapse:collapse;font-size:12px}
+.data-table th{text-align:left;padding:9px 12px;font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:0.6px;color:var(--ink-light);border-bottom:1px solid var(--border);background:var(--cream)}
+.data-table td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:middle}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tr:hover td{background:rgba(253,248,245,0.8)}
+.nota-input{width:54px;padding:4px 6px;border:1px solid var(--border-mid);border-radius:6px;text-align:center;font-size:12px;font-family:'DM Mono',monospace;background:#fff;color:var(--ink);transition:border-color 0.15s}
+.nota-input:focus{outline:none;border-color:var(--rose)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r-sm);font-size:13px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all 0.15s;border:none}
+.btn-primary{background:var(--rose);color:#fff}.btn-primary:hover{background:var(--rose-dark)}
+.btn-outline{background:#fff;color:var(--ink-mid);border:1px solid var(--border-mid)}.btn-outline:hover{background:var(--cream)}
+.btn-sm{padding:5px 12px;font-size:12px}
+.field{width:100%;padding:8px 12px;border:1px solid var(--border-mid);border-radius:var(--r-sm);font-size:13px;font-family:'DM Sans',sans-serif;color:var(--ink);background:#fff;transition:border-color 0.15s;outline:none}
+.field:focus{border-color:var(--rose)}
+.select-field{padding:7px 11px;border:1px solid var(--border-mid);border-radius:var(--r-sm);font-size:12px;font-family:'DM Sans',sans-serif;color:var(--ink);background:#fff;cursor:pointer;outline:none}
+.select-field:focus{border-color:var(--rose)}
+.period-pills{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.period-pill{padding:5px 13px;border:1px solid var(--border-mid);border-radius:20px;font-size:12px;cursor:pointer;background:#fff;color:var(--ink-light);font-family:'DM Sans',sans-serif;transition:all 0.15s}
+.period-pill:hover{border-color:var(--rose);color:var(--rose)}
+.period-pill.active{background:var(--rose);color:#fff;border-color:var(--rose)}
+.notice{padding:11px 15px;border-radius:var(--r-sm);font-size:12px;margin-bottom:16px;border:1px solid}
+.notice-info{background:var(--gold-light);border-color:var(--gold);color:#6A4A10}
+.notice-warn{background:var(--danger-light);border-color:var(--danger);color:#8B2020}
+.progress-bar{height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:3px;transition:width 0.5s ease}
+.empty-state{text-align:center;padding:44px 20px;color:var(--ink-light)}
+.empty-icon{font-size:36px;margin-bottom:10px}
+.empty-text{font-size:13px}
+/* CALENDAR */
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-cell{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;border-radius:7px;cursor:pointer;transition:background 0.1s;position:relative;flex-direction:column;gap:1px}
+.cal-cell:hover:not(.cal-header):not(.cal-empty){background:var(--blush)}
+.cal-cell.cal-header{color:var(--ink-light);font-size:10px;font-weight:500;cursor:default;text-transform:uppercase;letter-spacing:0.4px;aspect-ratio:auto;padding:4px 0}
+.cal-cell.cal-today{background:var(--rose);color:#fff;font-weight:500}
+.cal-cell.cal-prova{background:var(--warn-light);color:var(--warn);font-weight:500}
+.cal-cell.cal-vencimento{background:var(--danger-light);color:var(--danger);font-weight:500}
+.cal-cell.cal-oab{background:var(--purple-light);color:var(--purple);font-weight:500}
+.cal-cell.cal-empty{cursor:default}
+.cal-dot{width:4px;height:4px;border-radius:50%;background:currentColor;flex-shrink:0}
+.cal-tooltip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:10px;padding:5px 9px;border-radius:6px;white-space:nowrap;z-index:200;box-shadow:0 4px 12px rgba(0,0,0,0.2);pointer-events:none}
+.cal-tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:4px solid transparent;border-top-color:var(--ink)}
+.cal-cell:hover .cal-tooltip{display:block}
+/* EDITOR */
+.editor-container{border:1px solid var(--border-mid);border-radius:var(--r-lg);overflow:hidden;background:#fff}
+.editor-toolbar{display:flex;gap:3px;padding:9px 12px;border-bottom:1px solid var(--border);background:var(--cream);flex-wrap:wrap;align-items:center}
+.tool-btn{padding:4px 9px;border:1px solid var(--border-mid);border-radius:6px;background:#fff;cursor:pointer;font-size:12px;color:var(--ink);font-family:'DM Sans',sans-serif;transition:all 0.1s}
+.tool-btn:hover{background:var(--blush);border-color:var(--rose)}
+.tool-sep{width:1px;height:18px;background:var(--border-mid);margin:0 2px}
+.editor-body{min-height:220px;padding:18px 22px;font-size:14px;line-height:1.8;outline:none;border:none;background:#fff;color:var(--ink);font-family:'DM Sans',sans-serif}
+.editor-body:empty::before{content:attr(data-placeholder);color:var(--ink-light);pointer-events:none}
+/* NOTE LIST */
+.note-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.1s;border-radius:0}
+.note-item:hover{background:var(--cream);margin:0 -22px;padding:12px 22px;border-radius:var(--r-sm)}
+.note-item:last-child{border-bottom:none}
+.note-icon{width:34px;height:34px;border-radius:var(--r-sm);background:var(--rose-light);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.note-title{font-size:13px;font-weight:500;margin-bottom:2px}
+.note-meta{font-size:11px;color:var(--ink-light)}
+/* DRIVE */
+.folder-card{display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;border:1px solid var(--border);border-radius:var(--r-md);cursor:pointer;transition:all 0.15s;box-shadow:var(--shadow-sm)}
+.folder-card:hover{border-color:var(--rose);box-shadow:var(--shadow-md);transform:translateY(-1px)}
+.folder-icon-wrap{width:38px;height:38px;border-radius:var(--r-sm);background:var(--rose-light);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.file-item{display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.file-item:last-child{border-bottom:none}
+.file-icon{width:30px;height:30px;border-radius:6px;background:var(--gold-light);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+/* AUDIO */
+.audio-item{display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--cream);border-radius:var(--r-md);border:1px solid var(--border);margin-bottom:8px}
+.play-btn{width:34px;height:34px;border-radius:50%;background:var(--rose);border:none;cursor:pointer;color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;transition:background 0.15s;flex-shrink:0}
+.play-btn:hover{background:var(--rose-dark)}
+/* SCHEDULE */
+.schedule-slot{padding:10px 14px;border-radius:var(--r-sm);border:1px solid var(--border);margin-bottom:8px;background:#fff}
+.schedule-slot.priority-alta{border-left:3px solid var(--danger)}
+.schedule-slot.priority-media{border-left:3px solid var(--warn)}
+.schedule-slot.priority-baixa{border-left:3px solid var(--success)}
+.materia-perf{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.1s}
+.materia-perf:hover{background:var(--cream);margin:0 -22px;padding:10px 22px}
+.materia-perf:last-child{border-bottom:none}
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--rose-light);border-radius:2px}
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,16,24,0.5);z-index:500;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:var(--r-xl);padding:28px;width:90%;max-width:520px;box-shadow:0 20px 60px rgba(26,16,24,0.2);max-height:80vh;overflow-y:auto}
+.modal-title{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;margin-bottom:16px}
+.modal-close{position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--ink-light)}
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="logo-area">
+    <div class="logo-name">Duda <span>Study</span></div>
+    <div class="logo-sub">7º Período · 2026/1</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-section">Principal</div>
+    <button class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">◈</span><span>Dashboard</span></button>
+    <button class="nav-item" onclick="showPage('notas',this)"><span class="nav-icon">◎</span><span>Notas</span></button>
+    <button class="nav-item" onclick="showPage('cronograma',this)"><span class="nav-icon">◷</span><span>Cronograma</span></button>
+    <div class="nav-section">Conteúdo</div>
+    <button class="nav-item" onclick="showPage('cadernos',this)"><span class="nav-icon">◻</span><span>Cadernos</span></button>
+    <button class="nav-item" onclick="showPage('audios',this)"><span class="nav-icon">◉</span><span>Áudios</span></button>
+    <button class="nav-item" onclick="showPage('drive',this)"><span class="nav-icon">◫</span><span>Drive</span></button>
+    <div class="nav-section">Exame</div>
+    <button class="nav-item" onclick="showPage('oab',this)"><span class="nav-icon">⚖</span><span>OAB</span></button>
+  </nav>
+  <div class="oab-pill">
+    <div class="oab-pill-days" id="sidebar-oab-days">—</div>
+    <div class="oab-pill-label">dias p/ OAB 48</div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="page-title" id="page-title-display">Dashboard</div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="today-badge" id="today-label"></span>
+    </div>
+  </div>
+
+  <!-- ════ DASHBOARD ════ -->
+  <div id="page-dashboard" class="page active">
+    <div class="oab-hero">
+      <div class="oab-hero-inner">
+        <div>
+          <div class="oab-title">OAB 48º Exame de Ordem — 2026/2027</div>
+          <div class="oab-big-days" id="oab-big-days">—</div>
+          <div class="oab-big-label">dias até a 1ª Fase <em>(20/12/2026)</em></div>
+        </div>
+        <div class="oab-boxes">
+          <div class="oab-box"><div class="oab-box-val" id="oab-m">—</div><div class="oab-box-label">meses</div></div>
+          <div class="oab-box"><div class="oab-box-val" id="oab-w">—</div><div class="oab-box-label">semanas</div></div>
+          <div class="oab-box"><div class="oab-box-val" id="oab-d">—</div><div class="oab-box-label">dias</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-grid">
+      <div class="metric-card rose"><div class="metric-label">Dias estudados (semana)</div><div class="metric-value" id="m-dias">0</div><div class="metric-sub">registre abaixo</div></div>
+      <div class="metric-card gold"><div class="metric-label">Média global</div><div class="metric-value" id="m-media">—</div><div class="metric-sub">todas as matérias</div></div>
+      <div class="metric-card mint"><div class="metric-label">Anotações</div><div class="metric-value" id="m-notas">0</div><div class="metric-sub">no sistema</div></div>
+      <div class="metric-card slate"><div class="metric-label">Matérias ativas</div><div class="metric-value">8</div><div class="metric-sub">7º período</div></div>
+    </div>
+
+    <div class="grid-2" style="margin-bottom:18px">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Desempenho por matéria</div><span style="font-size:11px;color:var(--ink-light)">clique para detalhes</span></div>
+        <div id="desempenho-lista"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Próximas provas</div></div>
+        <div id="proximas-provas"></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Registrar estudo do dia</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select class="select-field" id="reg-materia" style="flex:1;min-width:160px">
+            <option>Direito Civil VI (Família)</option><option>Estágio I Simulada</option>
+            <option>D. Processual Civil IV</option><option>D. Empresarial III</option>
+            <option>D. Trabalho II</option><option>Estágio I Real</option>
+            <option>D. Adm. I (EAD)</option><option>D. Empresarial I (EAD)</option>
+            <option>OAB — D. Civil</option><option>OAB — D. Constitucional</option>
+            <option>OAB — D. Trabalho</option><option>OAB — D. Penal</option>
+            <option>OAB — Empresarial</option><option>OAB — Tributário</option>
+            <option>OAB — Proc. Civil</option><option>OAB — Proc. Penal</option>
+            <option>OAB — Adm.</option><option>OAB — Ética</option>
+          </select>
+          <input type="number" class="field" placeholder="min" id="reg-min" style="width:72px">
+          <button class="btn btn-primary btn-sm" onclick="registrarEstudo()">+ Registrar</button>
+        </div>
+        <div id="hoje-estudos" style="margin-top:10px;font-size:12px;color:var(--ink-light)">Nenhum estudo registrado hoje.</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title" id="cal-month-title">Abril 2026</div>
+          <div style="display:flex;gap:4px">
+            <button class="btn btn-outline btn-sm" onclick="changeMonth(-1)">‹</button>
+            <button class="btn btn-outline btn-sm" onclick="changeMonth(1)">›</button>
+          </div>
+        </div>
+        <div class="cal-grid" id="cal-headers"></div>
+        <div class="cal-grid" style="margin-top:3px" id="cal-grid"></div>
+        <div style="display:flex;gap:10px;margin-top:10px;flex-wrap:wrap">
+          <span style="font-size:10px;color:var(--ink-light);display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--rose);border-radius:50%;display:inline-block"></span>Hoje</span>
+          <span style="font-size:10px;color:var(--ink-light);display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--warn-light);border:1px solid var(--warn);border-radius:2px;display:inline-block"></span>Prova faculdade</span>
+          <span style="font-size:10px;color:var(--ink-light);display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--danger-light);border:1px solid var(--danger);border-radius:2px;display:inline-block"></span>Prazo/entrega</span>
+          <span style="font-size:10px;color:var(--ink-light);display:flex;align-items:center;gap:4px"><span style="width:10px;height:10px;background:var(--purple-light);border:1px solid var(--purple);border-radius:2px;display:inline-block"></span>OAB</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ NOTAS ════ -->
+  <div id="page-notas" class="page">
+    <div class="notice notice-info">💡 Distribuição: 10% Trabalho + 30% P1 + 30% P2 + 30% P3 = 100 pontos. Mínimo para aprovação: <strong>65 pontos</strong>. Abaixo → Exame Especial (substitui a menor nota entre P1, P2, P3).</div>
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-header">
+        <div class="card-title">Controle de notas — 7º Período 2026/1</div>
+        <button class="btn btn-primary btn-sm" onclick="salvarNotas()">Salvar</button>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="data-table">
+          <thead><tr><th>Matéria</th><th>Professor</th><th>Trabalho (0–10)</th><th>P1 (0–30)</th><th>P2 (0–30)</th><th>P3 (0–30)</th><th>Exame Esp.</th><th>Total (100)</th><th>Pontos p/ 65</th><th>Situação</th></tr></thead>
+          <tbody id="notas-body"></tbody>
+        </table>
+      </div>
+      <div style="margin-top:8px;font-size:12px;color:var(--success)" id="notas-saved-msg"></div>
+    </div>
+    <div class="card">
+      <div class="card-header"><div class="card-title">Contagem regressiva — provas</div></div>
+      <div id="countdown-provas"></div>
+    </div>
+  </div>
+
+  <!-- ════ CRONOGRAMA ════ -->
+  <div id="page-cronograma" class="page">
+    <div class="tabs" id="cron-tabs">
+      <button class="tab-btn active" onclick="setCronTab(this,'cron-checklist')">✓ Estudos da Semana</button>
+      <button class="tab-btn" onclick="setCronTab(this,'cron-estudo')">Plano Mensal</button>
+      <button class="tab-btn" onclick="setCronTab(this,'cron-faculdade')">Grade Faculdade</button>
+      <button class="tab-btn" onclick="setCronTab(this,'cron-oab-tab')">Plano OAB</button>
+    </div>
+
+    <!-- ── CHECKLIST SEMANAL ── -->
+    <div id="cron-checklist">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-size:18px;font-family:'Playfair Display',serif;font-weight:600">Semana de <span id="cron-week-label" style="color:var(--rose)"></span></div>
+          <div style="font-size:12px;color:var(--ink-light);margin-top:2px">Marque o que já estudou — 30min/dia útil, 4h sáb e dom</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn btn-outline btn-sm" onclick="prevWeek()">‹ Semana anterior</button>
+          <button class="btn btn-outline btn-sm" onclick="nextWeek()">Próxima semana ›</button>
+          <button class="btn btn-primary btn-sm" onclick="addCheckItem()">+ Adicionar tarefa</button>
+        </div>
+      </div>
+
+      <!-- Progress bar semana -->
+      <div class="card" style="margin-bottom:16px;padding:16px 22px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="font-size:12px;font-weight:500">Progresso da semana</div>
+          <div style="font-size:13px;font-weight:600;font-family:'DM Mono',monospace;color:var(--rose)" id="week-pct-label">0%</div>
+        </div>
+        <div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden">
+          <div id="week-progress-bar" style="height:100%;border-radius:4px;background:var(--rose);width:0%;transition:width 0.4s ease"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;color:var(--ink-light)">
+          <span id="week-done-count">0 tarefas concluídas</span>
+          <span id="week-total-count">0 tarefas no total</span>
+        </div>
+      </div>
+
+      <!-- Dias da semana -->
+      <div id="checklist-days" style="display:flex;flex-direction:column;gap:12px"></div>
+    </div>
+
+    <!-- ── PLANO MENSAL ── -->
+    <div id="cron-estudo" style="display:none">
+      <div class="notice notice-info">⏱️ Tempo disponível: <strong>30min/dia (seg–sex)</strong> + <strong>4h sáb</strong> + <strong>4h dom</strong> = ~10,5h/semana. Plano prioriza provas mais próximas.</div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">Desempenho — clique em qualquer matéria para detalhes</div></div>
+        <div id="materia-perf-lista"></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Plano mensal — Abril / Maio 2026</div></div>
+        <div id="plano-mensal"></div>
+      </div>
+    </div>
+
+    <!-- ── GRADE FACULDADE ── -->
+    <div id="cron-faculdade" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">Cronograma semestral — 2026/1</div></div>
+        <div style="overflow-x:auto">
+          <table class="data-table">
+            <thead><tr><th>Matéria</th><th>Professor</th><th>P1</th><th>P2</th><th>Avaliação Final</th><th>Exame Esp.</th><th>Próximo conteúdo</th></tr></thead>
+            <tbody>
+              <tr><td><strong style="font-size:12px">D. Civil VI</strong><div style="font-size:11px;color:var(--ink-light)">Família</div></td><td style="font-size:11px">Bruno Torquato de O. Naves</td><td><span class="badge badge-slate">✓ 26/03</span></td><td><span class="badge badge-amber">07/05</span></td><td>11/06</td><td>02/07</td><td style="font-size:11px;color:var(--ink-light)">—</td></tr>
+              <tr><td><strong style="font-size:12px">Estágio I Simulada</strong></td><td style="font-size:11px">Carlos H. C. Amaral</td><td><span class="badge badge-slate">✓ 27/03</span></td><td><span class="badge badge-amber">08/05</span></td><td>12/06</td><td>03/07</td><td style="font-size:11px">Recurso em Sentido Estrito<span style="color:var(--rose);display:block">Aula: 10/04</span></td></tr>
+              <tr><td><strong style="font-size:12px">D. Proc. Civil IV</strong></td><td style="font-size:11px">Fernando L. Tolentino</td><td><span class="badge badge-slate">✓ 30/03</span></td><td><span class="badge badge-amber">11/05</span></td><td>15/06</td><td>29/06</td><td style="font-size:11px">Agravo de instrumento<span style="color:var(--rose);display:block">Questionário: 23/04</span></td></tr>
+              <tr><td><strong style="font-size:12px">D. Empresarial III</strong></td><td style="font-size:11px">Bruno Fabrício da Costa</td><td><span class="badge badge-slate">✓ 31/03</span></td><td><span class="badge badge-amber">12/05</span></td><td>16/06</td><td>30/06</td><td>—</td></tr>
+              <tr><td><strong style="font-size:12px">D. Trabalho II</strong></td><td style="font-size:11px">Marcelo Baltar Bastos</td><td><span class="badge badge-slate">✓ 01/04</span></td><td><span class="badge badge-amber">13/05</span></td><td>17/06</td><td>01/07</td><td>—</td></tr>
+              <tr><td><strong style="font-size:12px">Estágio I Real</strong></td><td style="font-size:11px">Carlos H. C. Amaral</td><td>—</td><td><span class="badge badge-amber">15/05</span></td><td>19/06</td><td>—</td><td style="font-size:11px"><span style="color:var(--danger)">Relatório → até 08/05</span></td></tr>
+              <tr><td><strong style="font-size:12px">D. Adm. I (EAD)</strong></td><td style="font-size:11px">Luis André Vasconcelos</td><td><span class="badge badge-red">18/04</span></td><td>23/05</td><td>—</td><td>20/06</td><td style="font-size:11px"><span style="color:var(--danger)">A2/A3 → até 15/04</span></td></tr>
+              <tr><td><strong style="font-size:12px">D. Empresarial I (EAD)</strong></td><td style="font-size:11px">—</td><td><span class="badge badge-red">18/04</span></td><td>23/05</td><td>—</td><td>20/06</td><td style="font-size:11px">A4: 27/04–04/05</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PLANO OAB ── -->
+    <div id="cron-oab-tab" style="display:none">
+      <div class="notice notice-warn">📅 OAB 48º: Edital 14/09 · Inscrições 21–28/09 · <strong>1ª Fase: 20/12/2026</strong> · 2ª Fase: 21/02/2027</div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Cronograma OAB — sábados e domingos (4h cada)</div></div>
+        <div id="oab-plano-cronograma"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ CADERNOS ════ -->
+  <div id="page-cadernos" class="page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;flex-wrap:wrap;gap:12px">
+      <div class="period-pills" id="period-pills" style="margin-bottom:0">
+        <button class="period-pill active" onclick="setPeriod(this,7)">7º Período</button>
+        <button class="period-pill" onclick="setPeriod(this,8)">8º Período</button>
+        <button class="period-pill" onclick="setPeriod(this,9)">9º Período</button>
+        <button class="period-pill" onclick="setPeriod(this,10)">10º Período</button>
+      </div>
+      <button class="btn btn-primary btn-sm" onclick="newNote()">+ Nova anotação</button>
+    </div>
+    <div id="notes-list-container"></div>
+    <div id="note-editor-wrap" style="display:none;margin-top:14px">
+      <div class="editor-container">
+        <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--cream)">
+          <input type="text" class="field" id="note-title-input" placeholder="Título da anotação..." style="max-width:280px;flex:1">
+          <select class="select-field" id="note-materia-sel">
+            <option>Direito Civil VI</option><option>Estágio I - Simulada</option><option>D. Processual Civil IV</option>
+            <option>D. Empresarial III</option><option>D. Trabalho II</option><option>D. Adm. I</option>
+            <option>D. Empresarial I</option><option>D. Penal III</option><option>OAB</option><option>Geral</option>
+          </select>
+        </div>
+        <div class="editor-toolbar">
+          <button class="tool-btn" onclick="fmt('bold')"><b>N</b></button>
+          <button class="tool-btn" onclick="fmt('italic')"><i>I</i></button>
+          <button class="tool-btn" onclick="fmt('underline')"><u>S</u></button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" onclick="fmtColor('#C9647A')" style="color:#C9647A;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColor('#185FA5')" style="color:#185FA5;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColor('#3B6D11')" style="color:#3B6D11;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColor('#854F0B')" style="color:#854F0B;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColor('#5A3A8A')" style="color:#5A3A8A;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColor('#1A1018')">A normal</button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" onclick="execFontSize('5')">Grande</button>
+          <button class="tool-btn" onclick="execFontSize('3')">Médio</button>
+          <button class="tool-btn" onclick="execFontSize('2')">Pequeno</button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" onclick="fmt('insertUnorderedList')">• Lista</button>
+          <button class="tool-btn" onclick="fmt('insertOrderedList')">1. Num.</button>
+          <button class="tool-btn" onclick="highlight()">🖌 Destacar</button>
+        </div>
+        <div class="editor-body" id="note-editor-body" contenteditable="true" data-placeholder="Comece a escrever sua anotação aqui..."></div>
+        <div style="padding:10px 18px;border-top:1px solid var(--border);display:flex;gap:8px;background:var(--cream)">
+          <button class="btn btn-primary btn-sm" onclick="saveNote()">Salvar anotação</button>
+          <button class="btn btn-outline btn-sm" onclick="cancelNote()">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ ÁUDIOS ════ -->
+  <div id="page-audios" class="page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+      <div class="card-title" style="font-size:13px">Áudios das Aulas</div>
+      <label class="btn btn-primary btn-sm" style="cursor:pointer">+ Adicionar áudio<input type="file" accept="audio/*" style="display:none" onchange="addAudio(this)" multiple></label>
+    </div>
+    <div id="audio-list-container"></div>
+    <div class="empty-state" id="audio-empty"><div class="empty-icon">🎧</div><div class="empty-text">Adicione áudios das suas aulas para ter tudo em um lugar</div></div>
+  </div>
+
+  <!-- ════ DRIVE ════ -->
+  <div id="page-drive" class="page">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:10px">
+      <div class="period-pills" id="drive-period-pills" style="margin-bottom:0">
+        <button class="period-pill active" onclick="setDrivePeriod(this,7)">7º Período</button>
+        <button class="period-pill" onclick="setDrivePeriod(this,8)">8º Período</button>
+        <button class="period-pill" onclick="setDrivePeriod(this,9)">9º Período</button>
+        <button class="period-pill" onclick="setDrivePeriod(this,10)">10º Período</button>
+      </div>
+      <div id="drive-actions" style="display:flex;gap:8px"></div>
+    </div>
+    <div id="drive-content"></div>
+  </div>
+
+  <!-- ════ OAB ════ -->
+  <div id="page-oab" class="page">
+    <div class="oab-hero" style="margin-bottom:20px">
+      <div class="oab-hero-inner">
+        <div>
+          <div class="oab-title">OAB 48º Exame de Ordem — 1ª Fase</div>
+          <div class="oab-big-days" id="oab-page-days">—</div>
+          <div class="oab-big-label">dias até 20/12/2026</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:11px;color:rgba(255,255,255,0.4);margin-bottom:8px">Datas importantes</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.7);line-height:1.8">
+            📋 Edital: 14/09/2026<br>
+            📝 Inscrições: 21–28/09<br>
+            📌 Edital compl.: 19/11<br>
+            🥇 1ª Fase: 20/12/2026<br>
+            🥈 2ª Fase: 21/02/2027
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="setOabTab(this,'oab-areas-panel')">Áreas & Progresso</button>
+      <button class="tab-btn" onclick="setOabTab(this,'oab-questoes-panel')">Questões</button>
+      <button class="tab-btn" onclick="setOabTab(this,'oab-notas-panel')">Anotações OAB</button>
+      <button class="tab-btn" onclick="setOabTab(this,'oab-files-panel')">Arquivos OAB</button>
+    </div>
+
+    <div id="oab-areas-panel">
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px" id="oab-areas-grid"></div>
+    </div>
+
+    <div id="oab-questoes-panel" style="display:none">
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-header"><div class="card-title">Registrar sessão de questões</div></div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <select class="select-field" id="oab-area-sel"><option>D. Civil</option><option>D. Constitucional</option><option>D. do Trabalho</option><option>D. Penal</option><option>D. Empresarial</option><option>D. Tributário</option><option>D. Proc. Civil</option><option>D. Proc. Penal</option><option>D. Administrativo</option><option>Ética</option></select>
+          <input type="number" class="field" id="oab-acertos" placeholder="acertos" style="width:80px">
+          <input type="number" class="field" id="oab-total-q" placeholder="total" style="width:80px">
+          <button class="btn btn-primary btn-sm" onclick="registrarOAB()">Registrar</button>
+        </div>
+        <div id="oab-historico"></div>
+      </div>
+    </div>
+
+    <div id="oab-notas-panel" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+        <button class="btn btn-primary btn-sm" onclick="newOABNote()">+ Nova anotação OAB</button>
+      </div>
+      <div id="oab-notes-list"></div>
+      <div id="oab-note-editor-wrap" style="display:none;margin-top:12px">
+        <div class="editor-container">
+          <div style="padding:12px 16px;border-bottom:1px solid var(--border);background:var(--cream);display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <input type="text" class="field" id="oab-note-title" placeholder="Título..." style="max-width:260px;flex:1">
+            <select class="select-field" id="oab-note-area"><option>D. Civil</option><option>D. Constitucional</option><option>D. do Trabalho</option><option>D. Penal</option><option>D. Empresarial</option><option>D. Tributário</option><option>D. Proc. Civil</option><option>D. Proc. Penal</option><option>D. Administrativo</option><option>Ética</option><option>Geral</option></select>
+          </div>
+          <div class="editor-toolbar">
+            <button class="tool-btn" onclick="fmtOAB('bold')"><b>N</b></button>
+            <button class="tool-btn" onclick="fmtOAB('italic')"><i>I</i></button>
+            <button class="tool-btn" onclick="fmtOAB('underline')"><u>S</u></button>
+            <div class="tool-sep"></div>
+            <button class="tool-btn" onclick="fmtColorOAB('#C9647A')" style="color:#C9647A;font-weight:700">A</button>
+            <button class="tool-btn" onclick="fmtColorOAB('#185FA5')" style="color:#185FA5;font-weight:700">A</button>
+            <button class="tool-btn" onclick="fmtColorOAB('#3B6D11')" style="color:#3B6D11;font-weight:700">A</button>
+            <button class="tool-btn" onclick="fmtColorOAB('#1A1018')">A normal</button>
+            <div class="tool-sep"></div>
+            <button class="tool-btn" onclick="fmtOAB('insertUnorderedList')">• Lista</button>
+            <button class="tool-btn" onclick="highlightOAB()">🖌 Destacar</button>
+          </div>
+          <div class="editor-body" id="oab-note-body" contenteditable="true" data-placeholder="Anote conceitos, jurisprudência, artigos importantes..."></div>
+          <div style="padding:10px 16px;border-top:1px solid var(--border);background:var(--cream);display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="saveOABNote()">Salvar</button>
+            <button class="btn btn-outline btn-sm" onclick="cancelOABNote()">Cancelar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="oab-files-panel" style="display:none">
+      <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+        <label class="btn btn-primary btn-sm" style="cursor:pointer">+ Adicionar arquivo<input type="file" style="display:none" multiple onchange="addOABFile(this)"></label>
+      </div>
+      <div id="oab-files-list"></div>
+      <div class="empty-state" id="oab-files-empty"><div class="empty-icon">📁</div><div class="empty-text">Adicione apostilas, leis, resumos e materiais de OAB aqui</div></div>
+    </div>
+  </div>
+</main>
+
+<!-- MODAL MATERIA DETALHE -->
+<div class="modal-overlay" id="modal-materia" onclick="closeModal()">
+  <div class="modal" onclick="event.stopPropagation()">
+    <div class="modal-title" id="modal-mat-title">Matéria</div>
+    <div id="modal-mat-content"></div>
+    <div style="margin-top:16px;display:flex;justify-content:flex-end">
+      <button class="btn btn-outline btn-sm" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DRIVE PASTA -->
+<div class="modal-overlay" id="modal-drive" onclick="closeModal('modal-drive')">
+  <div class="modal" onclick="event.stopPropagation()" style="max-width:620px">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div class="modal-title" id="modal-drive-title">Pasta</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-primary btn-sm" onclick="newDriveNote()">+ Anotação</button>
+        <label class="btn btn-outline btn-sm" style="cursor:pointer">+ Arquivo<input type="file" style="display:none" multiple onchange="addDriveFile(this)"></label>
+        <button class="btn btn-outline btn-sm" onclick="closeModal('modal-drive')">✕</button>
+      </div>
+    </div>
+    <div id="modal-drive-content"></div>
+    <div id="drive-note-editor-wrap" style="display:none;margin-top:12px">
+      <div class="editor-container">
+        <div style="padding:10px 14px;border-bottom:1px solid var(--border);background:var(--cream)">
+          <input type="text" class="field" id="drive-note-title" placeholder="Título da anotação...">
+        </div>
+        <div class="editor-toolbar">
+          <button class="tool-btn" onclick="fmtDrive('bold')"><b>N</b></button>
+          <button class="tool-btn" onclick="fmtDrive('italic')"><i>I</i></button>
+          <button class="tool-btn" onclick="fmtDrive('underline')"><u>S</u></button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" onclick="fmtColorDrive('#C9647A')" style="color:#C9647A;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColorDrive('#185FA5')" style="color:#185FA5;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColorDrive('#3B6D11')" style="color:#3B6D11;font-weight:700">A</button>
+          <button class="tool-btn" onclick="fmtColorDrive('#1A1018')">A normal</button>
+          <div class="tool-sep"></div>
+          <button class="tool-btn" onclick="fmtDrive('insertUnorderedList')">• Lista</button>
+          <button class="tool-btn" onclick="highlightDrive()">🖌 Destacar</button>
+        </div>
+        <div class="editor-body" id="drive-note-body" contenteditable="true" data-placeholder="Escreva sua anotação..." style="min-height:160px"></div>
+        <div style="padding:8px 14px;border-top:1px solid var(--border);background:var(--cream);display:flex;gap:8px">
+          <button class="btn btn-primary btn-sm" onclick="saveDriveNote()">Salvar</button>
+          <button class="btn btn-outline btn-sm" onclick="document.getElementById('drive-note-editor-wrap').style.display='none'">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TODAY = new Date(2026,3,9);
+const OAB_DATE = new Date(2026,11,20); // 20/12/2026
+
+const PAGE_TITLES = {dashboard:'Dashboard',notas:'Notas & Pontuações',cronograma:'Cronograma & Plano de Estudo',cadernos:'Cadernos',audios:'Áudios das Aulas',drive:'Drive de Estudos',oab:'OAB 48º'};
+
+const MATERIAS = [
+  {n:'D. Civil VI (Família)', prof:'Bruno Torquato de O. Naves', color:'#C9647A', areas:['Família','Casamento','Divórcio','União Estável','Poder Familiar','Alimentos','Guarda']},
+  {n:'Estágio I Simulada', prof:'Carlos H. C. Amaral', color:'#7A5AB5', areas:['Peças processuais penais','Recursos','Habeas Corpus','Júri']},
+  {n:'D. Proc. Civil IV', prof:'Fernando Lage Tolentino', color:'#5A9E8A', areas:['Recursos cíveis','Apelação','Agravo','Recurso Especial','Recurso Extraordinário']},
+  {n:'D. Empresarial III', prof:'Bruno Fabrício da Costa', color:'#C9964A', areas:['Empresarial']},
+  {n:'D. Trabalho II', prof:'Marcelo Baltar Bastos', color:'#378ADD', areas:['Trabalhista']},
+  {n:'Estágio I Real', prof:'Carlos H. C. Amaral', color:'#C9A96E', areas:['Prática jurídica']},
+  {n:'D. Adm. I (EAD)', prof:'Luis André Vasconcelos', color:'#639922', areas:['Atos administrativos','Responsabilidade civil do Estado']},
+  {n:'D. Empresarial I (EAD)', prof:'—', color:'#5A3A8A', areas:['Empresarial']},
+];
+
+const NOTAS_MATERIAS = MATERIAS.map(m => m.n);
+
+const PROFS = {};
+MATERIAS.forEach(m => { PROFS[m.n] = m.prof; });
+
+const EVENTS = [
+  // PROVAS FACULDADE
+  {date:new Date(2026,3,18), label:'Aval. I EAD — D. Adm. I e D. Emp. I', type:'prova'},
+  {date:new Date(2026,3,15), label:'A2/A3 EAD (D. Adm.) — PRAZO', type:'prazo'},
+  {date:new Date(2026,4,7), label:'P2 — D. Civil VI', type:'prova'},
+  {date:new Date(2026,4,8), label:'P2 — Estágio I Simulada', type:'prova'},
+  {date:new Date(2026,4,11), label:'P2 — D. Proc. Civil IV', type:'prova'},
+  {date:new Date(2026,4,12), label:'P2 — D. Empresarial III', type:'prova'},
+  {date:new Date(2026,4,13), label:'P2 — D. Trabalho II', type:'prova'},
+  {date:new Date(2026,4,15), label:'P1 — Estágio I Real', type:'prova'},
+  {date:new Date(2026,4,8), label:'Relatório inicial — Estágio Real (PRAZO)', type:'prazo'},
+  {date:new Date(2026,4,20), label:'Simulado OAB (Estágio)', type:'prazo'},
+  {date:new Date(2026,4,23), label:'Aval. II EAD — D. Adm. e D. Emp. I', type:'prova'},
+  {date:new Date(2026,5,11), label:'AF — D. Civil VI', type:'prova'},
+  {date:new Date(2026,5,12), label:'AF — Estágio I Simulada', type:'prova'},
+  {date:new Date(2026,5,15), label:'AF — D. Proc. Civil IV', type:'prova'},
+  {date:new Date(2026,5,16), label:'AF — D. Empresarial III', type:'prova'},
+  {date:new Date(2026,5,17), label:'AF — D. Trabalho II', type:'prova'},
+  {date:new Date(2026,5,19), label:'AF — Estágio I Real', type:'prova'},
+  // OAB
+  {date:new Date(2026,8,14), label:'OAB 48 — Edital de Abertura', type:'oab'},
+  {date:new Date(2026,8,21), label:'OAB 48 — Início inscrições', type:'oab'},
+  {date:new Date(2026,8,28), label:'OAB 48 — Fim inscrições', type:'oab'},
+  {date:new Date(2026,10,19), label:'OAB 48 — Edital Complementar', type:'oab'},
+  {date:new Date(2026,11,20), label:'OAB 48 — 1ª Fase (Prova Objetiva)', type:'oab'},
+  {date:new Date(2027,1,21), label:'OAB 48 — 2ª Fase (Prático-Profissional)', type:'oab'},
+];
+
+const PROVAS = EVENTS.filter(e => e.type === 'prova' || e.type === 'prazo');
+
+let state = {
+  notas:{}, estudos:[], notes:[], oabNotes:[], audios:[], oabReg:[], oabFiles:[],
+  driveFolders:{}, weekTasks:{}, calMonth:3, calYear:2026,
+  notePeriod:7, drivePeriod:7, editingNoteIdx:null, editingOabNoteIdx:null,
+  currentDriveFolder:null, editingDriveNoteIdx:null,
+};
+
+NOTAS_MATERIAS.forEach(m => { state.notas[m] = {trab:'',p1:'',p2:'',p3:'',exame:''}; });
+
+try {
+  const saved = localStorage.getItem('dudastudy_v3');
+  if (saved) { const d = JSON.parse(saved); Object.keys(d).forEach(k => { if(k in state) state[k] = d[k]; }); }
+} catch(e) {}
+
+const save = () => { try { localStorage.setItem('dudastudy_v3', JSON.stringify(state)); } catch(e) {} };
+
+// ── NAV ──
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(btn) btn.classList.add('active');
+  document.getElementById('page-title-display').textContent = PAGE_TITLES[id]||id;
+  const fns = {notas:renderNotas, cadernos:renderNotes, drive:renderDrive, oab:renderOAB, cronograma:renderCronograma};
+  if(fns[id]) fns[id]();
+}
+
+// ── OAB COUNTDOWN ──
+function calcOAB() {
+  const diff = Math.ceil((OAB_DATE-TODAY)/86400000);
+  const m = Math.floor(diff/30), w = Math.floor(diff/7);
+  ['oab-big-days','oab-page-days','sidebar-oab-days'].forEach(id => { const el=document.getElementById(id); if(el) el.textContent=diff; });
+  const ids = {m:['oab-m'],w:['oab-w'],d:['oab-d']};
+  ids.m.forEach(id => { const el=document.getElementById(id); if(el) el.textContent=m; });
+  ids.w.forEach(id => { const el=document.getElementById(id); if(el) el.textContent=w; });
+  ids.d.forEach(id => { const el=document.getElementById(id); if(el) el.textContent=diff; });
+}
+
+// ── MEDIA CALC ──
+// Inputs: trab 0-10pts (weight 10), p1/p2/p3 0-30pts each (weight 30), total = 100 pts. Pass = 65
+function calcPontos(n) {
+  const t=parseFloat(n.trab)||0, p1=parseFloat(n.p1)||0, p2=parseFloat(n.p2)||0, p3=parseFloat(n.p3)||0;
+  let total = t + p1 + p2 + p3;
+  if(n.exame!==''&&!isNaN(parseFloat(n.exame))) {
+    const exame=parseFloat(n.exame);
+    const notas3=[p1,p2,p3], minIdx=notas3.indexOf(Math.min(...notas3));
+    total = t + notas3.reduce((a,b,i)=>i===minIdx?a:a+b,0) + exame;
+  }
+  return total;
+}
+// Alias for compatibility
+function calcMedia(n) { return calcPontos(n); }
+
+function faltaMedia(n) {
+  const t=parseFloat(n.trab)||0, p1=parseFloat(n.p1)||0, p2=parseFloat(n.p2)||0, p3=parseFloat(n.p3)||0;
+  const missing = [];
+  if(!n.p2||parseFloat(n.p2)===0) missing.push('P2');
+  if(!n.p3||parseFloat(n.p3)===0) missing.push('P3');
+  if(!missing.length) return null;
+  const atual = t + p1 + p2 + p3;
+  // Each missing prova worth max 30pts
+  const maxFromMissing = missing.length * 30;
+  const falta = 65 - atual;
+  if(falta <= 0) return {ok:true};
+  if(falta > maxFromMissing) return {ok:false, val:null, missing};
+  // Average needed per missing prova
+  const needed = falta / missing.length;
+  return {ok:false, val:Math.ceil(needed), missing, falta:Math.ceil(falta)};
+}
+
+// ── DESEMPENHO ──
+function renderDesempenho() {
+  const el = document.getElementById('desempenho-lista');
+  if(!el) return;
+  const entries = MATERIAS.map(m => {
+    const n = state.notas[m.n]||{trab:'',p1:'',p2:'',p3:'',exame:''};
+    const hasData = Object.values(n).some(v=>v!=='');
+    return {...m, media:hasData?calcMedia(n):null, notas:n};
+  }).sort((a,b)=>(b.media||0)-(a.media||0));
+
+  el.innerHTML = entries.map(e => {
+    const pct = e.media!==null ? Math.min(e.media,100) : 0;
+    const color = e.media!==null ? (e.media>=65?'#5A9E6A':e.media>=50?'#C9964A':'#C96464') : '#ccc';
+    return `<div class="materia-perf" onclick="openMateriaModal('${e.n}')">
+      <div style="width:10px;height:10px;border-radius:50%;background:${e.color};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:500">${e.n}</div>
+        <div style="width:100%;height:4px;background:var(--border);border-radius:2px;margin-top:5px;overflow:hidden">
+          <div style="height:100%;border-radius:2px;background:${color};width:${pct}%;transition:width 0.5s"></div>
+        </div>
+      </div>
+      <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:${color};min-width:30px;text-align:right">${e.media!==null?Math.round(e.media)+'pts':'—'}</div>
+      <div style="font-size:10px;color:var(--ink-light);width:14px;text-align:right">›</div>
+    </div>`;
+  }).join('');
+
+  const medias = entries.filter(e=>e.media!==null).map(e=>e.media);
+  const mg = medias.length?(medias.reduce((a,b)=>a+b,0)/medias.length):null;
+  const mEl = document.getElementById('m-media');
+  if(mEl) mEl.textContent = mg?Math.round(mg)+'pts':'—';
+}
+
+function openMateriaModal(nome) {
+  const m = MATERIAS.find(x=>x.n===nome);
+  if(!m) return;
+  const n = state.notas[nome]||{trab:'',p1:'',p2:'',p3:'',exame:''};
+  const hasData = Object.values(n).some(v=>v!=='');
+  const media = hasData?calcMedia(n):null;
+  const falta = hasData?faltaMedia(n):null;
+  const upcoming = EVENTS.filter(e=>e.label.toLowerCase().includes(nome.toLowerCase().slice(0,8))&&!e.done&&e.date>=TODAY).sort((a,b)=>a.date-b.date);
+
+  document.getElementById('modal-mat-title').textContent = nome;
+  document.getElementById('modal-mat-content').innerHTML = `
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div style="background:var(--cream);border-radius:var(--r-sm);padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--ink-light);margin-bottom:4px">Média atual</div>
+        <div style="font-size:28px;font-weight:600;font-family:'Playfair Display',serif;color:${media?(media>=65?'#5A9E6A':'#C96464'):'var(--ink-light)'}">${media?Math.round(media):'—'}</div>
+      </div>
+      <div style="background:var(--cream);border-radius:var(--r-sm);padding:12px;text-align:center">
+        <div style="font-size:11px;color:var(--ink-light);margin-bottom:4px">Situação</div>
+        <div style="font-size:14px;font-weight:500;margin-top:4px">${!hasData?'Sem notas':media>=65?'✅ Aprovada em andamento':'⚠️ Risco de exame'}</div>
+      </div>
+    </div>
+    ${falta&&!falta.ok&&falta.val?`<div class="notice notice-warn" style="margin-bottom:12px">Para atingir 65 pts, ainda faltam <strong>${falta.falta} pontos</strong> — precisa de pelo menos ${falta.val} pts em cada uma das nas próximas: ${falta.missing.join(', ')}.</div>`:''}
+    ${falta&&falta.ok?`<div style="padding:10px;background:var(--success-light);border-radius:var(--r-sm);font-size:12px;color:var(--success);margin-bottom:12px">✅ Já garantiu a média mínima — continue firme!</div>`:''}
+    <div style="margin-bottom:12px">
+      <div style="font-size:11px;color:var(--ink-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px">Notas</div>
+      <div style="display:flex;gap:8px;font-size:12px;flex-wrap:wrap">
+        <span style="background:var(--cream);padding:4px 10px;border-radius:6px">Trabalho: ${n.trab||'—'}</span>
+        <span style="background:var(--cream);padding:4px 10px;border-radius:6px">P1: ${n.p1||'—'}</span>
+        <span style="background:var(--cream);padding:4px 10px;border-radius:6px">P2: ${n.p2||'—'}</span>
+        <span style="background:var(--cream);padding:4px 10px;border-radius:6px">P3: ${n.p3||'—'}</span>
+        ${n.exame?`<span style="background:var(--gold-light);padding:4px 10px;border-radius:6px">Exame: ${n.exame}</span>`:''}
+      </div>
+    </div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:11px;color:var(--ink-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px">Professor</div>
+      <div style="font-size:13px">${m.prof}</div>
+    </div>
+    <div>
+      <div style="font-size:11px;color:var(--ink-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.6px">Conteúdos</div>
+      <div style="font-size:12px;color:var(--ink-mid)">${m.areas.join(' · ')}</div>
+    </div>
+  `;
+  document.getElementById('modal-materia').classList.add('open');
+}
+
+function closeModal(id) {
+  document.getElementById(id||'modal-materia').classList.remove('open');
+}
+
+// ── PRÓXIMAS PROVAS ──
+function renderProximas() {
+  const el = document.getElementById('proximas-provas');
+  if(!el) return;
+  const upcoming = EVENTS.filter(e=>e.date>=TODAY).sort((a,b)=>a.date-b.date).slice(0,7);
+  el.innerHTML = upcoming.map(p => {
+    const diff = Math.ceil((p.date-TODAY)/86400000);
+    const cls = diff<=7?'badge-red':diff<=21?'badge-amber':'badge-green';
+    const typeColor = p.type==='oab'?'var(--purple)':p.type==='prazo'?'var(--danger)':'var(--warn)';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <span class="badge ${cls}" style="min-width:44px;justify-content:center">${diff}d</span>
+      <div style="flex:1">
+        <div style="font-size:12px;font-weight:500">${p.label}</div>
+        <div style="font-size:10px;color:var(--ink-light)">${p.date.toLocaleDateString('pt-BR')}</div>
+      </div>
+      <div style="width:6px;height:6px;border-radius:50%;background:${typeColor};flex-shrink:0"></div>
+    </div>`;
+  }).join('')||'<div style="font-size:12px;color:var(--ink-light);padding:10px 0">Sem eventos próximos.</div>';
+}
+
+// ── CALENDAR ──
+function renderCalendar() {
+  const m = state.calMonth, y = state.calYear;
+  const months=['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+  const el = document.getElementById('cal-month-title');
+  if(el) el.textContent = months[m]+' '+y;
+  const hdrs = document.getElementById('cal-headers');
+  if(hdrs) hdrs.innerHTML = ['D','S','T','Q','Q','S','S'].map(d=>`<div class="cal-cell cal-header">${d}</div>`).join('');
+
+  // Mapear eventos por dia
+  const evMap = {};
+  EVENTS.forEach(e => {
+    if(e.date.getMonth()===m && e.date.getFullYear()===y) {
+      const d = e.date.getDate();
+      if(!evMap[d]) evMap[d] = [];
+      evMap[d].push(e);
+    }
+  });
+
+  const first = new Date(y,m,1).getDay();
+  const days = new Date(y,m+1,0).getDate();
+  let html = '';
+  for(let i=0;i<first;i++) html+=`<div class="cal-cell cal-empty"></div>`;
+  for(let d=1;d<=days;d++) {
+    const isToday = d===TODAY.getDate()&&m===TODAY.getMonth()&&y===TODAY.getFullYear();
+    const evs = evMap[d]||[];
+    let cls = isToday?'cal-today':'';
+    if(!isToday && evs.length) {
+      const types = evs.map(e=>e.type);
+      if(types.includes('oab')) cls='cal-oab';
+      else if(types.includes('prazo')) cls='cal-vencimento';
+      else if(types.includes('prova')) cls='cal-prova';
+    }
+    const tooltip = evs.length ? `<div class="cal-tooltip">${evs.map(e=>e.label).join('<br>')}</div>` : '';
+    html+=`<div class="cal-cell ${cls}" title="${evs.map(e=>e.label).join(' | ')}">${d}${evs.length&&!isToday?'<div class="cal-dot"></div>':''}${tooltip}</div>`;
+  }
+  const grid = document.getElementById('cal-grid');
+  if(grid) grid.innerHTML = html;
+}
+
+function changeMonth(dir) {
+  state.calMonth+=dir;
+  if(state.calMonth>11){state.calMonth=0;state.calYear++;}
+  if(state.calMonth<0){state.calMonth=11;state.calYear--;}
+  renderCalendar();
+}
+
+// ── NOTAS ──
+function renderNotas() {
+  const tbody = document.getElementById('notas-body');
+  if(!tbody) return;
+  tbody.innerHTML = NOTAS_MATERIAS.map(m => {
+    const n = state.notas[m]||{trab:'',p1:'',p2:'',p3:'',exame:''};
+    const hasData = Object.values(n).some(v=>v!=='');
+    const media = hasData?calcMedia(n):null;
+    const falta = hasData?faltaMedia(n):null;
+    const key = m.replace(/\W/g,'_');
+    const mediaColor = media!==null?(media>=65?'#5A9E6A':'#C96464'):'var(--ink-light)';
+    const sitBadge = !hasData?'<span class="badge badge-gray">—</span>':media>=65?'<span class="badge badge-green">Aprovada</span>':'<span class="badge badge-red">Exame Esp.</span>';
+    let faltaText = '—';
+    if(falta) {
+      if(falta.ok) faltaText='<span style="color:#5A9E6A;font-size:11px">✓ aprovação garantida</span>';
+      else if(falta.val) faltaText=`<span style="color:#C96464;font-size:12px;font-weight:600;font-family:'DM Mono',monospace">${falta.falta} pts</span><span style="font-size:10px;color:var(--ink-light)"> (≥${falta.val}/prova em ${falta.missing.join('/')})</span>`;
+      else if(!falta.val && falta.missing) faltaText='<span style="color:#C96464;font-size:11px">⚠ necessita exame</span>';
+    }
+    return `<tr>
+      <td style="font-weight:500;font-size:12px">${m}</td>
+      <td style="font-size:10px;color:var(--ink-light)">${PROFS[m]||'—'}</td>
+      <td><input type="number" class="nota-input" value="${n.trab}" placeholder="0–10" min="0" max="10" step="0.5" oninput="liveNota('${m}','trab',this.value)"></td>
+      <td><input type="number" class="nota-input" value="${n.p1}" placeholder="0–30" min="0" max="30" step="0.5" oninput="liveNota('${m}','p1',this.value)"></td>
+      <td><input type="number" class="nota-input" value="${n.p2}" placeholder="0–30" min="0" max="30" step="0.5" oninput="liveNota('${m}','p2',this.value)"></td>
+      <td><input type="number" class="nota-input" value="${n.p3}" placeholder="0–30" min="0" max="30" step="0.5" oninput="liveNota('${m}','p3',this.value)"></td>
+      <td><input type="number" class="nota-input" value="${n.exame}" placeholder="—" min="0" max="30" step="0.5" oninput="liveNota('${m}','exame',this.value)" style="border-style:dashed"></td>
+      <td><span class="media-display" id="media-${key}" style="font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:${mediaColor}">${media!==null?Math.round(media):'—'}</span></td>
+      <td id="falta-${key}" style="font-size:12px">${faltaText}</td>
+      <td id="sit-${key}">${sitBadge}</td>
+    </tr>`;
+  }).join('');
+  renderCountdownProvas();
+}
+
+function liveNota(materia, campo, val) {
+  if(!state.notas[materia]) return;
+  state.notas[materia][campo] = val;
+  save();
+  const n = state.notas[materia];
+  const hasData = Object.values(n).some(v=>v!=='');
+  const media = hasData?calcMedia(n):null;
+  const falta = hasData?faltaMedia(n):null;
+  const key = materia.replace(/\W/g,'_');
+  const mc = document.getElementById('media-'+key);
+  const sc = document.getElementById('sit-'+key);
+  const fc = document.getElementById('falta-'+key);
+  if(mc){mc.textContent=media!==null?Math.round(media):'—';mc.style.color=media!==null?(media>=65?'#5A9E6A':'#C96464'):'var(--ink-light)';}
+  if(sc)sc.innerHTML=!hasData?'<span class="badge badge-gray">—</span>':media>=65?'<span class="badge badge-green">Aprovada</span>':'<span class="badge badge-red">Exame Esp.</span>';
+  if(fc&&falta){
+    if(falta.ok)fc.innerHTML='<span style="color:#5A9E6A;font-size:11px">✓ aprovação garantida</span>';
+    else if(falta.val)fc.innerHTML=`<span style="color:#C96464;font-size:12px;font-weight:600;font-family:'DM Mono',monospace">${falta.falta} pts</span><span style="font-size:10px;color:var(--ink-light)"> (≥${falta.val}/prova em ${falta.missing.join('/')})</span>`;
+    else fc.innerHTML='<span style="color:#C96464;font-size:11px">⚠ necessita exame</span>';
+  }
+  renderDesempenho();
+}
+
+function salvarNotas() {
+  save();
+  const el = document.getElementById('notas-saved-msg');
+  if(el){el.textContent='✓ Notas salvas!';setTimeout(()=>el.textContent='',2000);}
+}
+
+function renderCountdownProvas() {
+  const el = document.getElementById('countdown-provas');
+  if(!el) return;
+  const upcoming = EVENTS.filter(e=>e.date>=TODAY).sort((a,b)=>a.date-b.date);
+  el.innerHTML = upcoming.map(p=>{
+    const diff = Math.ceil((p.date-TODAY)/86400000);
+    const cls = diff<=7?'badge-red':diff<=21?'badge-amber':'badge-green';
+    const status = diff<=7?'🔴 Urgente':diff<=21?'🟡 Em breve':'🟢 Longe';
+    return `<div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <span class="badge ${cls}" style="min-width:44px;justify-content:center">${diff}d</span>
+      <div style="flex:1;font-size:12px;font-weight:500">${p.label}</div>
+      <div style="font-size:11px;color:var(--ink-light)">${p.date.toLocaleDateString('pt-BR')}</div>
+      <span style="font-size:11px">${status}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── ESTUDO ──
+function registrarEstudo() {
+  const mat = document.getElementById('reg-materia').value;
+  const min = parseInt(document.getElementById('reg-min').value);
+  if(!min||min<=0) return;
+  const dateStr = TODAY.toISOString().split('T')[0];
+  state.estudos.push({data:dateStr,materia:mat,minutos:min});
+  save();
+  const hoje = state.estudos.filter(e=>e.data===dateStr);
+  const el = document.getElementById('hoje-estudos');
+  if(el) el.innerHTML = hoje.map(e=>`<span class="badge badge-rose" style="margin-right:5px;margin-top:4px">${e.materia}: ${e.minutos}min</span>`).join('');
+  document.getElementById('reg-min').value='';
+  updateDias();
+}
+
+function updateDias() {
+  const dias = new Set(state.estudos.filter(e=>{const d=new Date(e.data+'T12:00:00');return(TODAY-d)/86400000>=0&&(TODAY-d)/86400000<7;}).map(e=>e.data));
+  const el = document.getElementById('m-dias');
+  if(el) el.textContent = dias.size;
+}
+
+// ── CRONOGRAMA ──
+function setCronTab(btn, id) {
+  document.querySelectorAll('#cron-tabs .tab-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  ['cron-checklist','cron-estudo','cron-faculdade','cron-oab-tab'].forEach(x=>{
+    const el=document.getElementById(x);
+    if(el) el.style.display = x===id?'block':'none';
+  });
+}
+
+function renderCronograma() {
+  renderChecklistSemanal();
+  renderMateriaPerfLista();
+  renderPlanoMensal();
+  renderOABPlanoCron();
+}
+
+// ── CHECKLIST SEMANAL ──
+// Each week has a set of tasks. State stored per week key "YYYY-Www"
+function getWeekKey(date) {
+  const d = new Date(date);
+  d.setHours(0,0,0,0);
+  d.setDate(d.getDate() + 4 - (d.getDay()||7));
+  const year = d.getFullYear();
+  const week = Math.ceil((((d - new Date(year,0,1))/86400000)+1)/7);
+  return `${year}-W${String(week).padStart(2,'0')}`;
+}
+
+function getWeekDates(offset) {
+  const base = new Date(TODAY);
+  base.setDate(base.getDate() + offset*7);
+  // Get Monday of that week
+  const mon = new Date(base);
+  const day = mon.getDay();
+  mon.setDate(mon.getDate() - (day===0?6:day-1));
+  return Array.from({length:7},(_,i)=>{const d=new Date(mon);d.setDate(mon.getDate()+i);return d;});
+}
+
+const DIAS_NOMES = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
+const DAY_PLANS = {
+  0:{label:'Segunda',tempo:'30 min',tipo:'fac',color:'var(--rose)'},
+  1:{label:'Terça',tempo:'30 min',tipo:'fac',color:'var(--rose)'},
+  2:{label:'Quarta',tempo:'30 min',tipo:'fac',color:'var(--rose)'},
+  3:{label:'Quinta',tempo:'30 min',tipo:'fac',color:'var(--rose)'},
+  4:{label:'Sexta',tempo:'30 min',tipo:'fac',color:'var(--rose)'},
+  5:{label:'Sábado',tempo:'4 horas',tipo:'misto',color:'var(--gold)'},
+  6:{label:'Domingo',tempo:'4 horas',tipo:'oab',color:'var(--purple)'},
+};
+
+// Default tasks per weekday (0=Mon..6=Sun)
+function getDefaultTasks(dayOfWeek, dateObj) {
+  const d = dateObj.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'});
+  const maps = [
+    [{id:'t1',text:'D. Proc. Civil IV — revisar conteúdo da semana',materia:'DPC IV',tipo:'fac'}],
+    [{id:'t2',text:'Estágio Simulada — peças e recursos',materia:'Estágio',tipo:'fac'}],
+    [{id:'t3',text:'D. Civil VI (Família) — revisar matéria',materia:'D.Civil',tipo:'fac'}],
+    [{id:'t4',text:'D. Empresarial III — revisar conteúdo',materia:'Emp.III',tipo:'fac'}],
+    [{id:'t5',text:'D. Trabalho II — revisar conteúdo',materia:'Trab.II',tipo:'fac'}],
+    [
+      {id:'t6',text:'Faculdade — revisão geral (2h)',materia:'Faculdade',tipo:'fac'},
+      {id:'t7',text:'OAB — D. Civil: família, obrigações (1h)',materia:'OAB',tipo:'oab'},
+      {id:'t8',text:'OAB — questões anteriores (1h)',materia:'OAB',tipo:'oab'},
+    ],
+    [
+      {id:'t9',text:'OAB — D. Constitucional (2h)',materia:'OAB',tipo:'oab'},
+      {id:'t10',text:'OAB — D. Penal (1h)',materia:'OAB',tipo:'oab'},
+      {id:'t11',text:'OAB — simulado / questões (1h)',materia:'OAB',tipo:'oab'},
+    ],
+  ];
+  return maps[dayOfWeek].map(t=>({...t, id: t.id+'_'+dateObj.toISOString().split('T')[0], done:false}));
+}
+
+let cronWeekOffset = 0;
+
+function renderChecklistSemanal() {
+  const dates = getWeekDates(cronWeekOffset);
+  const weekKey = getWeekKey(dates[0]);
+  const lbl = document.getElementById('cron-week-label');
+  if(lbl) lbl.textContent = dates[0].toLocaleDateString('pt-BR',{day:'2-digit',month:'long'}) + ' – ' + dates[6].toLocaleDateString('pt-BR',{day:'2-digit',month:'long'});
+
+  // Init week tasks in state if not present
+  if(!state.weekTasks) state.weekTasks = {};
+  if(!state.weekTasks[weekKey]) {
+    state.weekTasks[weekKey] = dates.map((d,i)=>({
+      date: d.toISOString().split('T')[0],
+      dayIdx: i,
+      tasks: getDefaultTasks(i, d)
+    }));
+  }
+
+  const container = document.getElementById('checklist-days');
+  if(!container) return;
+
+  let totalDone=0, totalAll=0;
+  const html = state.weekTasks[weekKey].map((dayData, dayIdx)=>{
+    const info = DAY_PLANS[dayIdx];
+    const d = dates[dayIdx];
+    const isToday = d.toDateString() === TODAY.toDateString();
+    const isPast = d < TODAY && !isToday;
+    const tasks = dayData.tasks||[];
+    const done = tasks.filter(t=>t.done).length;
+    totalDone+=done; totalAll+=tasks.length;
+    const pct = tasks.length?Math.round(done/tasks.length*100):0;
+    const dayEvents = EVENTS.filter(e=>e.date.toDateString()===d.toDateString());
+
+    // Color coding
+    const borderColor = dayIdx>=5?info.color:'var(--border)';
+    const headerBg = isToday?'var(--rose-light)':dayIdx===5?'var(--gold-light)':dayIdx===6?'var(--purple-light)':'var(--cream)';
+    const headerColor = isToday?'var(--rose-dark)':dayIdx===5?'#8A6A30':dayIdx===6?'var(--purple)':'var(--ink)';
+
+    return `<div style="background:#fff;border:1px solid ${isToday?'var(--rose)':borderColor};border-radius:var(--r-lg);overflow:hidden;box-shadow:var(--shadow-sm)${isToday?';box-shadow:0 0 0 2px var(--rose-light)':''}">
+      <!-- Day header -->
+      <div style="background:${headerBg};padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;gap:10px">
+          <div style="font-weight:500;font-size:14px;color:${headerColor}">${info.label}${isToday?' <span style="font-size:10px;background:var(--rose);color:#fff;padding:2px 7px;border-radius:10px;vertical-align:middle">Hoje</span>':''}</div>
+          <div style="font-size:11px;color:var(--ink-light)">${d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}</div>
+          <span style="font-size:11px;font-weight:500;color:${info.color};background:#fff;padding:2px 8px;border-radius:10px;border:1px solid ${info.color}22">${info.tempo}</span>
+          ${dayIdx===5||dayIdx===6?'<span style="font-size:10px;background:'+(dayIdx===5?'var(--gold-light)':'var(--purple-light)')+';color:'+(dayIdx===5?'#6A4A10':'var(--purple)')+';padding:2px 8px;border-radius:10px">'+(dayIdx===5?'📚 Faculdade + OAB':'⚖️ OAB foco')+'</span>':''}
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          ${dayEvents.length?`<div style="font-size:11px;color:var(--danger);font-weight:500">📅 ${dayEvents.map(e=>e.label).join(' · ')}</div>`:''}
+          <div style="font-size:11px;color:var(--ink-light)">${done}/${tasks.length}</div>
+          <div style="width:60px;height:5px;background:var(--border);border-radius:3px;overflow:hidden"><div style="height:100%;border-radius:3px;background:${pct===100?'var(--success)':'var(--rose)'};width:${pct}%"></div></div>
+          <button onclick="addTaskToDay('${weekKey}',${dayIdx})" style="background:none;border:1px solid var(--border-mid);border-radius:6px;cursor:pointer;font-size:11px;padding:3px 8px;color:var(--ink-light);font-family:'DM Sans',sans-serif">+ tarefa</button>
+        </div>
+      </div>
+      <!-- Tasks -->
+      <div style="padding:4px 0">
+        ${tasks.map((task,ti)=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 18px;border-bottom:1px solid var(--border);transition:background 0.1s${task.done?';opacity:0.55':''}${isPast&&!task.done?';border-left:3px solid var(--danger)':''}">
+          <input type="checkbox" ${task.done?'checked':''} onchange="toggleTask('${weekKey}',${dayIdx},${ti},this.checked)"
+            style="width:16px;height:16px;cursor:pointer;accent-color:var(--rose);flex-shrink:0">
+          <div style="flex:1">
+            <div style="font-size:13px;${task.done?'text-decoration:line-through;color:var(--ink-light)':''}">${task.text}</div>
+          </div>
+          <span style="font-size:10px;padding:2px 7px;border-radius:10px;background:${task.tipo==='oab'?'var(--purple-light)':'var(--rose-light)'};color:${task.tipo==='oab'?'var(--purple)':'var(--rose-dark)'}">${task.materia}</span>
+          <button onclick="removeTask('${weekKey}',${dayIdx},${ti})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:14px;padding:0 4px;line-height:1">×</button>
+        </div>`).join('')}
+        ${tasks.length===0?'<div style="padding:12px 18px;font-size:12px;color:var(--ink-light)">Nenhuma tarefa — clique em "+ tarefa" para adicionar.</div>':''}
+      </div>
+    </div>`;
+  }).join('');
+
+  container.innerHTML = html;
+
+  // Update progress
+  const pct = totalAll?Math.round(totalDone/totalAll*100):0;
+  const pb = document.getElementById('week-progress-bar');
+  const pl = document.getElementById('week-pct-label');
+  const dc = document.getElementById('week-done-count');
+  const tc = document.getElementById('week-total-count');
+  if(pb) pb.style.width = pct+'%';
+  if(pl) pl.textContent = pct+'%';
+  if(dc) dc.textContent = totalDone+' tarefa'+(totalDone!==1?'s':'')+' concluída'+(totalDone!==1?'s':'');
+  if(tc) tc.textContent = totalAll+' tarefa'+(totalAll!==1?'s':'')+' no total';
+}
+
+function toggleTask(weekKey, dayIdx, taskIdx, checked) {
+  state.weekTasks[weekKey][dayIdx].tasks[taskIdx].done = checked;
+  save();
+  renderChecklistSemanal();
+  updateDias();
+}
+
+function addTaskToDay(weekKey, dayIdx) {
+  const text = prompt('Descrição da tarefa:');
+  if(!text) return;
+  const materia = prompt('Matéria (ex: D.Civil, OAB, Estágio):') || 'Geral';
+  const tipo = materia.toLowerCase().includes('oab')?'oab':'fac';
+  state.weekTasks[weekKey][dayIdx].tasks.push({
+    id: 'custom_'+Date.now(), text, materia, tipo, done:false
+  });
+  save(); renderChecklistSemanal();
+}
+
+function addCheckItem() {
+  const dates = getWeekDates(cronWeekOffset);
+  const weekKey = getWeekKey(dates[0]);
+  const dayName = prompt('Em qual dia? (0=Seg, 1=Ter, 2=Qua, 3=Qui, 4=Sex, 5=Sáb, 6=Dom)');
+  const dayIdx = parseInt(dayName);
+  if(isNaN(dayIdx)||dayIdx<0||dayIdx>6) return;
+  addTaskToDay(weekKey, dayIdx);
+}
+
+function removeTask(weekKey, dayIdx, taskIdx) {
+  state.weekTasks[weekKey][dayIdx].tasks.splice(taskIdx,1);
+  save(); renderChecklistSemanal();
+}
+
+function prevWeek() { cronWeekOffset--; renderChecklistSemanal(); }
+function nextWeek() { cronWeekOffset++; renderChecklistSemanal(); }
+
+function renderMateriaPerfLista() {
+  const el = document.getElementById('materia-perf-lista');
+  if(!el) return;
+  const entries = MATERIAS.map(m=>{
+    const n=state.notas[m.n]||{trab:'',p1:'',p2:'',p3:'',exame:''};
+    const hasData=Object.values(n).some(v=>v!=='');
+    const media=hasData?calcMedia(n):null;
+    // Prova mais próxima
+    const next = EVENTS.filter(e=>e.label.toLowerCase().includes(m.n.toLowerCase().slice(0,8))&&e.date>=TODAY).sort((a,b)=>a.date-b.date)[0];
+    const days = next?Math.ceil((next.date-TODAY)/86400000):null;
+    const urgency = days&&days<=14?'alta':days&&days<=30?'media':'baixa';
+    return {...m, media, days, urgency, hasData};
+  }).sort((a,b)=>((a.days||999)-(b.days||999)));
+
+  el.innerHTML = entries.map(e=>{
+    const color = e.media!==null?(e.media>=65?'#5A9E6A':e.media>=50?'#C9964A':'#C96464'):'#ccc';
+    const pct = e.media!==null?Math.min(e.media,100):0;
+    const urgBadge = e.urgency==='alta'?'badge-red':e.urgency==='media'?'badge-amber':'badge-green';
+    return `<div class="materia-perf" onclick="openMateriaModal('${e.n}')">
+      <div style="width:10px;height:10px;border-radius:50%;background:${e.color};flex-shrink:0"></div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span style="font-size:12px;font-weight:500">${e.n}</span>
+          ${e.urgency==='alta'?'<span class="badge badge-red" style="font-size:10px">Focar!</span>':''}
+        </div>
+        <div style="width:100%;height:4px;background:var(--border);border-radius:2px;overflow:hidden">
+          <div style="height:100%;border-radius:2px;background:${color};width:${pct}%"></div>
+        </div>
+      </div>
+      <div style="text-align:right;min-width:70px">
+        <div style="font-family:'DM Mono',monospace;font-size:12px;font-weight:500;color:${color}">${e.media!==null?Math.round(e.media)+'pts':'—'}</div>
+        ${e.days?`<div style="font-size:10px;color:var(--ink-light)">${e.days}d p/ prova</div>`:''}
+      </div>
+      <div style="font-size:10px;color:var(--ink-light)">›</div>
+    </div>`;
+  }).join('');
+}
+
+function renderPlanoMensal() {
+  const el = document.getElementById('plano-mensal');
+  if(!el) return;
+  const meses = [
+    {mes:'Abril 2026', itens:[
+      {sem:'Semana 1 (09-15)', fac:'Revisar P1, iniciar conteúdo P2. EAD: A2/A3 D. Adm.', oab:'D. Civil — parte geral, família'},
+      {sem:'Semana 2 (16-22)', fac:'PROVA EAD 18/04. D. Proc. Civil IV — Agravo. Estágio: Recurso de Apelação', oab:'D. Constitucional — direitos fundamentais'},
+      {sem:'Semana 3 (23-29)', fac:'Questionário online DPC IV (23/04). D. Civil VI revisão', oab:'D. Penal — parte geral'},
+    ]},
+    {mes:'Maio 2026', itens:[
+      {sem:'Semana 1 (01-07)', fac:'Revisão geral para P2 (P2 D. Civil: 07/05)', oab:'D. Trabalho — questões práticas'},
+      {sem:'Semana 2 (08-15)', fac:'P2 Simulada 08/05 · P2 DPC IV 11/05 · P2 Emp III 12/05 · P2 Trabalho 13/05 · Estágio 15/05', oab:'D. Empresarial — tipos societários'},
+      {sem:'Semana 3 (16-22)', fac:'Relatório estágio. EAD Aval. II (23/05)', oab:'D. Tributário — CTN'},
+    ]},
+  ];
+  el.innerHTML = meses.map(m=>`
+    <div style="margin-bottom:16px">
+      <div style="font-size:12px;font-weight:500;color:var(--rose);margin-bottom:8px">${m.mes}</div>
+      ${m.itens.map(s=>`<div style="display:grid;grid-template-columns:140px 1fr 1fr;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);font-size:11px">
+        <div style="font-weight:500;color:var(--ink-mid)">${s.sem}</div>
+        <div style="color:var(--ink-mid)">${s.fac}</div>
+        <div style="color:var(--purple)">${s.oab}</div>
+      </div>`).join('')}
+    </div>`).join('');
+}
+
+function renderOABPlanoCron() {
+  const el = document.getElementById('oab-plano-cronograma');
+  if(!el) return;
+  const plano = [
+    {periodo:'Abr–Mai 2026 (2 meses)', foco:'D. Civil + D. Constitucional', meta:'Sábados: 4h D. Civil · Domingos: 4h D. Const.', questoes:'20 questões/fds'},
+    {periodo:'Jun–Jul 2026 (2 meses)', foco:'D. Penal + D. do Trabalho', meta:'Sábados: 4h D. Penal · Domingos: 4h D. Trabalho', questoes:'30 questões/fds'},
+    {periodo:'Ago–Set 2026 (2 meses)', foco:'D. Proc. Civil + D. Proc. Penal', meta:'Sábados: 4h DPC · Domingos: 4h DPP', questoes:'40 questões/fds'},
+    {periodo:'Out–Nov 2026 (2 meses)', foco:'D. Empresarial + Tributário + Adm.', meta:'Sábados: 4h revisão · Domingos: simulados', questoes:'Simulados completos'},
+    {periodo:'Dez 2026 — Prova 20/12', foco:'Revisão geral + simulados', meta:'Foco total em simulados de provas anteriores', questoes:'1 simulado completo/fds'},
+  ];
+  el.innerHTML = `<div style="display:grid;grid-template-columns:160px 1fr 1fr 140px;gap:0;font-size:11px">
+    <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Período</div>
+    <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Foco</div>
+    <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Divisão semanal</div>
+    <div style="font-weight:500;color:var(--ink-light);padding:8px;border-bottom:1px solid var(--border)">Meta</div>
+    ${plano.map(p=>`
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);font-weight:500;color:var(--rose)">${p.periodo}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border)">${p.foco}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);color:var(--ink-mid)">${p.meta}</div>
+    <div style="padding:9px 8px;border-bottom:1px solid var(--border);color:var(--purple)">${p.questoes}</div>`).join('')}
+  </div>`;
+}
+
+// ── CADERNOS ──
+function renderNotes() {
+  const el = document.getElementById('notes-list-container');
+  if(!el) return;
+  const filtered = state.notes.filter(n=>n.period===state.notePeriod);
+  document.getElementById('m-notas').textContent = state.notes.length;
+  if(!filtered.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📓</div><div class="empty-text">Nenhuma anotação no ${state.notePeriod}º período ainda.<br>Clique em "+ Nova anotação" para começar!</div></div>`;return;}
+  el.innerHTML=`<div class="card" style="padding:0;overflow:hidden">`+filtered.map(n=>{
+    const idx=state.notes.indexOf(n);
+    return `<div class="note-item" onclick="openNote(${idx})">
+      <div class="note-icon">📄</div>
+      <div style="flex:1"><div class="note-title">${n.title||'Sem título'}</div><div class="note-meta">${n.materia} · ${new Date(n.date).toLocaleDateString('pt-BR')}</div></div>
+      <button onclick="deleteNote(event,${idx})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:18px;padding:0 6px">×</button>
+    </div>`;
+  }).join('')+`</div>`;
+}
+
+function setPeriod(el,p){document.querySelectorAll('#period-pills .period-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');state.notePeriod=p;renderNotes();}
+function newNote(){state.editingNoteIdx=null;document.getElementById('note-title-input').value='';document.getElementById('note-editor-body').innerHTML='';document.getElementById('note-editor-wrap').style.display='block';document.getElementById('note-editor-body').focus();}
+function openNote(idx){const n=state.notes[idx];state.editingNoteIdx=idx;document.getElementById('note-title-input').value=n.title||'';document.getElementById('note-editor-body').innerHTML=n.content||'';document.getElementById('note-materia-sel').value=n.materia||'Geral';document.getElementById('note-editor-wrap').style.display='block';}
+function saveNote(){const note={title:document.getElementById('note-title-input').value,content:document.getElementById('note-editor-body').innerHTML,materia:document.getElementById('note-materia-sel').value,period:state.notePeriod,date:new Date().toISOString()};if(state.editingNoteIdx!==null)state.notes[state.editingNoteIdx]=note;else state.notes.push(note);save();document.getElementById('note-editor-wrap').style.display='none';renderNotes();}
+function cancelNote(){document.getElementById('note-editor-wrap').style.display='none';}
+function deleteNote(e,idx){e.stopPropagation();if(confirm('Excluir?')){state.notes.splice(idx,1);save();renderNotes();}}
+function fmt(cmd){document.execCommand(cmd,false,null);document.getElementById('note-editor-body').focus();}
+function fmtColor(c){document.execCommand('foreColor',false,c);document.getElementById('note-editor-body').focus();}
+function highlight(){document.execCommand('backColor',false,'#F5EDD8');document.getElementById('note-editor-body').focus();}
+function execFontSize(s){document.execCommand('fontSize',false,s);document.getElementById('note-editor-body').focus();}
+
+// ── AUDIO ──
+const audioURLs = {};
+function addAudio(input){if(!input.files.length)return;Array.from(input.files).forEach(f=>{const url=URL.createObjectURL(f);const id=Date.now()+Math.random();audioURLs[id]=url;state.audios=state.audios||[];state.audios.push({id,name:f.name,date:new Date().toISOString()});});renderAudios();}
+function renderAudios(){const el=document.getElementById('audio-list-container');if(!el)return;if(!state.audios||!state.audios.length){document.getElementById('audio-empty').style.display='block';return;}document.getElementById('audio-empty').style.display='none';el.innerHTML=state.audios.map(a=>`<div class="audio-item"><button class="play-btn" onclick="toggleAudio(${a.id})" id="play-${a.id}">▶</button><div style="flex:1"><div style="font-size:13px;font-weight:500">${a.name}</div><div style="font-size:11px;color:var(--ink-light)">${new Date(a.date).toLocaleDateString('pt-BR')}</div></div><audio id="audio-${a.id}" src="${audioURLs[a.id]||''}"></audio><button onclick="removeAudio(${a.id})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:18px">×</button></div>`).join('');}
+function toggleAudio(id){const a=document.getElementById('audio-'+id),btn=document.getElementById('play-'+id);if(a){if(a.paused){a.play();if(btn)btn.textContent='⏸';}else{a.pause();if(btn)btn.textContent='▶';}}}
+function removeAudio(id){state.audios=state.audios.filter(a=>a.id!==id);delete audioURLs[id];renderAudios();}
+
+// ── DRIVE ──
+const DRIVE_FOLDERS_7 = ['Direito Civil VI (Família)','Estágio I — Simulada','D. Proc. Civil IV','D. Empresarial III','D. Trabalho II','Estágio I Real','D. Adm. I (EAD)','D. Emp. I (EAD)','D. Penal III (EAD)','D. Proc. Penal I (EAD)','OAB — Materiais','Documentos Gerais'];
+
+function renderDrive() {
+  const el = document.getElementById('drive-content');
+  const acts = document.getElementById('drive-actions');
+  if(!el) return;
+  const p = state.drivePeriod;
+  if(p===7) {
+    if(acts) acts.innerHTML = `<button class="btn btn-primary btn-sm" onclick="addDriveFolder()">+ Nova pasta</button>`;
+    const folders = state.driveFolders['7'] || DRIVE_FOLDERS_7.map(n=>({name:n,notes:[],files:[]}));
+    if(!state.driveFolders['7']) state.driveFolders['7'] = folders;
+    el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">`+
+      folders.map((f,i)=>`<div class="folder-card" onclick="openDriveFolder(${i})">
+        <div class="folder-icon-wrap">📁</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:500">${f.name}</div>
+        <div style="font-size:11px;color:var(--ink-light);margin-top:2px">${(f.notes||[]).length} anotações · ${(f.files||[]).length} arquivos</div></div>
+      </div>`).join('')+`</div>`;
+  } else {
+    if(acts) acts.innerHTML=`<button class="btn btn-primary btn-sm" onclick="addDriveFolder()">+ Nova pasta</button>`;
+    const folders = state.driveFolders[p+'']||[];
+    if(!folders.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📁</div><div class="empty-text">O ${p}º período ainda não tem pastas.</div></div>`;return;}
+    el.innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px">`+
+      folders.map((f,i)=>`<div class="folder-card" onclick="openDriveFolder(${i})">
+        <div class="folder-icon-wrap">📁</div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:500">${f.name}</div>
+        <div style="font-size:11px;color:var(--ink-light);margin-top:2px">${(f.notes||[]).length} anotações · ${(f.files||[]).length} arquivos</div></div>
+      </div>`).join('')+`</div>`;
+  }
+}
+
+function addDriveFolder() {
+  const name = prompt('Nome da nova pasta:');
+  if(!name) return;
+  const key = state.drivePeriod+'';
+  if(!state.driveFolders[key]) state.driveFolders[key]=[];
+  state.driveFolders[key].push({name,notes:[],files:[]});
+  save(); renderDrive();
+}
+
+function setDrivePeriod(el,p){document.querySelectorAll('#drive-period-pills .period-pill').forEach(b=>b.classList.remove('active'));el.classList.add('active');state.drivePeriod=p;renderDrive();}
+
+function openDriveFolder(idx) {
+  const key = state.drivePeriod+'';
+  const folder = state.driveFolders[key][idx];
+  state.currentDriveFolder = {key, idx};
+  state.editingDriveNoteIdx = null;
+  document.getElementById('modal-drive-title').textContent = folder.name;
+  document.getElementById('drive-note-editor-wrap').style.display='none';
+  renderDriveFolderContent(folder);
+  document.getElementById('modal-drive').classList.add('open');
+}
+
+function renderDriveFolderContent(folder) {
+  const el = document.getElementById('modal-drive-content');
+  if(!el) return;
+  const notes = folder.notes||[];
+  const files = folder.files||[];
+  let html = '';
+  if(notes.length){
+    html += `<div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">Anotações</div>`;
+    html += `<div style="border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden;margin-bottom:16px">`;
+    html += notes.map((n,i)=>`<div class="note-item" style="padding:10px 14px;border-radius:0" onclick="openDriveNote(${i})">
+      <div class="note-icon" style="width:28px;height:28px;font-size:13px">📄</div>
+      <div style="flex:1"><div style="font-size:12px;font-weight:500">${n.title||'Sem título'}</div><div style="font-size:10px;color:var(--ink-light)">${new Date(n.date).toLocaleDateString('pt-BR')}</div></div>
+      <button onclick="deleteDriveNote(event,${i})" style="background:none;border:none;cursor:pointer;color:var(--ink-light)">×</button>
+    </div>`).join('');
+    html += `</div>`;
+  }
+  if(files.length){
+    html += `<div style="font-size:11px;color:var(--ink-light);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px">Arquivos</div>`;
+    html += `<div style="border:1px solid var(--border);border-radius:var(--r-md);overflow:hidden">`;
+    html += files.map((f,i)=>`<div class="file-item">
+      <div class="file-icon">📎</div>
+      <div style="flex:1;font-size:12px">${f.name}</div>
+      <span style="font-size:10px;color:var(--ink-light)">${new Date(f.date).toLocaleDateString('pt-BR')}</span>
+      <button onclick="deleteDriveFile(${i})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);margin-left:8px">×</button>
+    </div>`).join('');
+    html += `</div>`;
+  }
+  if(!notes.length && !files.length) html = `<div class="empty-state" style="padding:30px"><div class="empty-icon">📂</div><div class="empty-text">Pasta vazia. Adicione anotações ou arquivos.</div></div>`;
+  el.innerHTML = html;
+}
+
+function newDriveNote() {
+  state.editingDriveNoteIdx = null;
+  document.getElementById('drive-note-title').value='';
+  document.getElementById('drive-note-body').innerHTML='';
+  document.getElementById('drive-note-editor-wrap').style.display='block';
+}
+
+function openDriveNote(i) {
+  const {key,idx} = state.currentDriveFolder;
+  const n = state.driveFolders[key][idx].notes[i];
+  state.editingDriveNoteIdx = i;
+  document.getElementById('drive-note-title').value = n.title||'';
+  document.getElementById('drive-note-body').innerHTML = n.content||'';
+  document.getElementById('drive-note-editor-wrap').style.display='block';
+}
+
+function saveDriveNote() {
+  const {key,idx} = state.currentDriveFolder;
+  const folder = state.driveFolders[key][idx];
+  const note = {title:document.getElementById('drive-note-title').value, content:document.getElementById('drive-note-body').innerHTML, date:new Date().toISOString()};
+  if(state.editingDriveNoteIdx!==null) folder.notes[state.editingDriveNoteIdx]=note;
+  else { folder.notes=folder.notes||[]; folder.notes.push(note); }
+  save(); document.getElementById('drive-note-editor-wrap').style.display='none';
+  renderDriveFolderContent(folder); renderDrive();
+}
+
+function deleteDriveNote(e,i) {
+  e.stopPropagation();
+  if(!confirm('Excluir?')) return;
+  const {key,idx}=state.currentDriveFolder;
+  state.driveFolders[key][idx].notes.splice(i,1);
+  save(); renderDriveFolderContent(state.driveFolders[key][idx]); renderDrive();
+}
+
+function addDriveFile(input) {
+  if(!input.files.length) return;
+  const {key,idx}=state.currentDriveFolder;
+  const folder=state.driveFolders[key][idx];
+  folder.files=folder.files||[];
+  Array.from(input.files).forEach(f=>folder.files.push({name:f.name,date:new Date().toISOString()}));
+  save(); renderDriveFolderContent(folder); renderDrive();
+}
+
+function deleteDriveFile(i) {
+  const {key,idx}=state.currentDriveFolder;
+  state.driveFolders[key][idx].files.splice(i,1);
+  save(); renderDriveFolderContent(state.driveFolders[key][idx]); renderDrive();
+}
+
+function fmtDrive(cmd){document.execCommand(cmd,false,null);document.getElementById('drive-note-body').focus();}
+function fmtColorDrive(c){document.execCommand('foreColor',false,c);document.getElementById('drive-note-body').focus();}
+function highlightDrive(){document.execCommand('backColor',false,'#F5EDD8');document.getElementById('drive-note-body').focus();}
+
+// ── OAB ──
+function setOabTab(btn,id){document.querySelectorAll('#page-oab .tab-btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');['oab-areas-panel','oab-questoes-panel','oab-notas-panel','oab-files-panel'].forEach(x=>document.getElementById(x).style.display=x===id?'block':'none');}
+
+function renderOAB() {
+  const areas = [
+    {n:'D. Civil',color:'#C9647A'},{n:'D. Constitucional',color:'#5A3A8A'},
+    {n:'D. do Trabalho',color:'#5A9E8A'},{n:'D. Penal',color:'#C96464'},
+    {n:'D. Empresarial',color:'#C9964A'},{n:'D. Tributário',color:'#639922'},
+    {n:'D. Proc. Civil',color:'#378ADD'},{n:'D. Proc. Penal',color:'#C9A96E'},
+    {n:'D. Administrativo',color:'#534AB7'},{n:'Ética',color:'#D4537E'},
+  ];
+  const stats={};
+  (state.oabReg||[]).forEach(r=>{if(!stats[r.area])stats[r.area]={ac:0,tot:0};stats[r.area].ac+=r.ac;stats[r.area].tot+=r.tot;});
+  const grid = document.getElementById('oab-areas-grid');
+  if(grid) grid.innerHTML = areas.map(a=>{
+    const s=stats[a.n];const pct=s?Math.round(s.ac/s.tot*100):0;
+    return `<div style="background:#fff;border:1px solid var(--border);border-radius:var(--r-md);padding:14px;box-shadow:var(--shadow-sm);border-top:3px solid ${a.color}">
+      <div style="font-size:12px;font-weight:500;margin-bottom:6px">${a.n}</div>
+      <div style="height:5px;background:var(--border);border-radius:3px;overflow:hidden;margin-bottom:6px"><div style="height:100%;border-radius:3px;background:${a.color};width:${pct}%"></div></div>
+      <div style="font-size:11px;color:var(--ink-light)">${s?`${s.ac}/${s.tot} questões · ${pct}%`:'Nenhuma questão'}</div>
+    </div>`;
+  }).join('');
+  renderOABNotes();
+  renderOABFiles();
+  const hist = document.getElementById('oab-historico');
+  if(hist&&state.oabReg.length) hist.innerHTML=(state.oabReg||[]).slice(-6).reverse().map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px"><span>${r.area}</span><span>${new Date(r.date).toLocaleDateString('pt-BR')}</span><span class="badge badge-${r.ac/r.tot>=0.6?'green':'amber'}">${r.ac}/${r.tot} · ${Math.round(r.ac/r.tot*100)}%</span></div>`).join('');
+  else if(hist) hist.innerHTML='<div style="font-size:12px;color:var(--ink-light);padding:10px 0">Nenhuma questão registrada ainda.</div>';
+}
+
+function registrarOAB() {
+  const area=document.getElementById('oab-area-sel').value;
+  const ac=parseInt(document.getElementById('oab-acertos').value)||0;
+  const tot=parseInt(document.getElementById('oab-total-q').value)||0;
+  if(!tot)return;
+  state.oabReg=state.oabReg||[];
+  state.oabReg.push({area,ac,tot,date:new Date().toISOString()});
+  save();document.getElementById('oab-acertos').value='';document.getElementById('oab-total-q').value='';
+  renderOAB();
+}
+
+function newOABNote(){state.editingOabNoteIdx=null;document.getElementById('oab-note-title').value='';document.getElementById('oab-note-body').innerHTML='';document.getElementById('oab-note-editor-wrap').style.display='block';}
+function saveOABNote(){const note={title:document.getElementById('oab-note-title').value,content:document.getElementById('oab-note-body').innerHTML,area:document.getElementById('oab-note-area').value,date:new Date().toISOString()};if(state.editingOabNoteIdx!==null)state.oabNotes[state.editingOabNoteIdx]=note;else{state.oabNotes=state.oabNotes||[];state.oabNotes.push(note);}save();document.getElementById('oab-note-editor-wrap').style.display='none';renderOABNotes();}
+function cancelOABNote(){document.getElementById('oab-note-editor-wrap').style.display='none';}
+function renderOABNotes(){const el=document.getElementById('oab-notes-list');if(!el)return;const notes=state.oabNotes||[];if(!notes.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">📝</div><div class="empty-text">Nenhuma anotação OAB. Clique em "+ Nova anotação OAB".</div></div>`;return;}el.innerHTML=`<div class="card" style="padding:0;overflow:hidden">`+notes.map((n,i)=>`<div class="note-item" onclick="openOABNote(${i})"><div class="note-icon">📋</div><div style="flex:1"><div class="note-title">${n.title||'Sem título'}</div><div class="note-meta">${n.area||'OAB'} · ${new Date(n.date).toLocaleDateString('pt-BR')}</div></div><button onclick="deleteOABNote(event,${i})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);font-size:18px">×</button></div>`).join('')+`</div>`;}
+function openOABNote(i){const n=state.oabNotes[i];state.editingOabNoteIdx=i;document.getElementById('oab-note-title').value=n.title||'';document.getElementById('oab-note-body').innerHTML=n.content||'';document.getElementById('oab-note-area').value=n.area||'Geral';document.getElementById('oab-note-editor-wrap').style.display='block';}
+function deleteOABNote(e,i){e.stopPropagation();if(confirm('Excluir?')){state.oabNotes.splice(i,1);save();renderOABNotes();}}
+function fmtOAB(cmd){document.execCommand(cmd,false,null);document.getElementById('oab-note-body').focus();}
+function fmtColorOAB(c){document.execCommand('foreColor',false,c);document.getElementById('oab-note-body').focus();}
+function highlightOAB(){document.execCommand('backColor',false,'#F5EDD8');document.getElementById('oab-note-body').focus();}
+
+function addOABFile(input){if(!input.files.length)return;state.oabFiles=state.oabFiles||[];Array.from(input.files).forEach(f=>state.oabFiles.push({name:f.name,date:new Date().toISOString()}));save();renderOABFiles();}
+function renderOABFiles(){const el=document.getElementById('oab-files-list');const empty=document.getElementById('oab-files-empty');if(!el)return;const files=state.oabFiles||[];if(!files.length){if(empty)empty.style.display='block';el.innerHTML='';return;}if(empty)empty.style.display='none';el.innerHTML=`<div class="card" style="padding:0;overflow:hidden">`+files.map((f,i)=>`<div class="file-item"><div class="file-icon">📎</div><div style="flex:1;font-size:13px">${f.name}</div><span style="font-size:11px;color:var(--ink-light)">${new Date(f.date).toLocaleDateString('pt-BR')}</span><button onclick="deleteOABFile(${i})" style="background:none;border:none;cursor:pointer;color:var(--ink-light);margin-left:8px;font-size:16px">×</button></div>`).join('')+`</div>`;}
+function deleteOABFile(i){state.oabFiles.splice(i,1);save();renderOABFiles();}
+
+// ── INIT ──
+function init() {
+  const today = TODAY.toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const el = document.getElementById('today-label');
+  if(el) el.textContent = today.charAt(0).toUpperCase()+today.slice(1);
+  calcOAB(); renderDesempenho(); renderProximas(); renderCalendar(); updateDias();
+  const todayStr = TODAY.toISOString().split('T')[0];
+  const hoje = (state.estudos||[]).filter(e=>e.data===todayStr);
+  if(hoje.length){const el=document.getElementById('hoje-estudos');if(el)el.innerHTML=hoje.map(e=>`<span class="badge badge-rose" style="margin-right:5px;margin-top:4px">${e.materia}: ${e.minutos}min</span>`).join('');}
+  document.getElementById('m-notas').textContent = (state.notes||[]).length;
+}
+init();
+</script>
+</body>
+</html>
